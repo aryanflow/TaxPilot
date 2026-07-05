@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useMemo } from "react";
+import PracticePortal from "./PracticePortal.jsx";
 
 const BG    = "#0B0B0C";
 const CARD  = "#141416";
@@ -147,7 +148,9 @@ const wrap = { maxWidth: 1080, margin: "0 auto", padding: "0 24px" };
 const eye = { fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", color: FAINT, fontFamily: "'JetBrains Mono',monospace" };
 const h2s = { fontSize: "clamp(2rem,4.4vw,3.1rem)", fontWeight: 600, marginTop: 12, letterSpacing: "-0.015em", lineHeight: 1.05 };
 
-const NAV = [["home","Home"],["finder","Find my form"],["mapping","What goes where"],["calc","Calculator"],["solutions","Solutions"]];
+const TOOLS = [["finder","Find my form"],["mapping","What goes where"],["calc","Calculator"],["solutions","Solutions"]];
+const NAV = [["home","Home"], ...TOOLS];
+const TOOL_IDS = new Set(TOOLS.map(([id]) => id));
 
 export default function App() {
   const [view, setView] = useState("home");
@@ -155,6 +158,10 @@ export default function App() {
   const [yi, setYi] = useState(0);
 
   const go = (v) => { setView(v); window.scrollTo({ top: 0, behavior: "smooth" }); };
+
+  if (view === "practice") {
+    return <PracticePortal onExit={() => go("home")} />;
+  }
 
   return (
     <div style={{ background: BG, color: TEXT, fontFamily: "'Inter',system-ui,sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
@@ -178,6 +185,16 @@ export default function App() {
         .btn:hover{transform:translateY(-2px)}
         .btn-p{background:${AMBER};color:#0A0A0A}.btn-p:hover{background:#FFC66E}
         .btn-g{background:transparent;color:${TEXT};border-color:${LINE}}.btn-g:hover{border-color:rgba(255,255,255,0.3)}
+        .btn-sandbox{font-size:14px;padding:11px 20px;background:linear-gradient(135deg,rgba(43,58,143,0.22),rgba(43,58,143,0.08));color:#c8d4f5;border-color:rgba(91,124,214,0.45)}
+        .btn-sandbox:hover{border-color:rgba(123,156,230,0.7);background:linear-gradient(135deg,rgba(43,58,143,0.32),rgba(43,58,143,0.14))}
+        .portal-link{color:${FAINT};font-size:13px;text-decoration:none;white-space:nowrap;padding:8px 4px}
+        .portal-link:hover{color:${MUTE}}
+        .nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+        .nav-sep{width:1px;height:22px;background:${LINE};flex:none}
+        .practice-strip{background:linear-gradient(90deg,rgba(43,58,143,0.18),rgba(43,58,143,0.04) 55%,transparent);border-bottom:1px solid ${LINE}}
+        .practice-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:14px 0}
+        .practice-strip p{color:${MUTE};font-size:14px;line-height:1.45;max-width:640px}
+        .sandbox-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:rgba(43,58,143,0.35);color:#a8bce8;border:1px solid rgba(91,124,214,0.35);margin-right:8px;vertical-align:middle}
         .tab{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;cursor:pointer;background:transparent;color:${MUTE};border:1px solid ${LINE};transition:all .2s;white-space:nowrap}
         .tab:hover{color:${TEXT};border-color:rgba(255,255,255,0.22)}
         .tab.on{background:${AMBER};color:#0A0A0A;border-color:${AMBER}}
@@ -211,7 +228,7 @@ export default function App() {
         .page.on{background:${AMBER};color:#0A0A0A;border-color:${AMBER}}
         .page:disabled{opacity:.35;cursor:not-allowed}
         .bar{height:100%;background:${AMBER};border-radius:4px;transition:width .5s cubic-bezier(.22,1,.36,1)}
-        @media(max-width:760px){.nav-links{display:none}.hero-h{font-size:15vw !important}.two{grid-template-columns:1fr !important}.two>div:first-child{border-right:none !important;border-bottom:1px solid ${LINE}}}
+        @media(max-width:760px){.hide-sm{display:none !important}.nav-links{display:none}.portal-link{display:none}.hero-h{font-size:15vw !important}.two{grid-template-columns:1fr !important}.two>div:first-child{border-right:none !important;border-bottom:1px solid ${LINE}}.practice-strip-inner{align-items:flex-start}}}
         @media(prefers-reduced-motion:reduce){.rise{transition:none;opacity:1;transform:none}.glow{animation:none}.viewfade{animation:none}}
       `}</style>
 
@@ -224,11 +241,19 @@ export default function App() {
             Tax<span style={{ color: AMBER }}>Pilot</span>
           </button>
           <div className="nav-links" style={{ display: "flex", gap: 28 }}>
-            {NAV.slice(1).map(([v, label]) => (<button key={v} className={"lnk" + (view === v ? " on" : "")} onClick={() => go(v)}>{label}</button>))}
+            {TOOLS.map(([v, label]) => (<button key={v} className={"lnk" + (view === v ? " on" : "")} onClick={() => go(v)}>{label}</button>))}
           </div>
-          <a className="btn btn-p" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer">Open portal ↗</a>
+          <div className="nav-actions">
+            <button type="button" className="btn btn-sandbox" onClick={() => go("practice")}>
+              <span className="sandbox-tag">Sandbox</span>Practice portal
+            </button>
+            <span className="nav-sep hide-sm" aria-hidden="true" />
+            <a className="portal-link hide-sm" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer">Real portal ↗</a>
+          </div>
         </div>
       </nav>
+
+      {TOOL_IDS.has(view) && <PracticeStrip go={go} />}
 
       <div className="viewfade" key={view}>
         {view === "home" && <Home years={years} yi={yi} setYi={setYi} go={go} />}
@@ -243,10 +268,25 @@ export default function App() {
           <div style={{ display: "flex", gap: 22, flexWrap: "wrap", alignItems: "center" }}>
             <span className="disp" style={{ fontWeight: 700, fontSize: 15 }}>Tax<span style={{ color: AMBER }}>Pilot</span></span>
             {NAV.map(([v, label]) => (<button key={v} className="lnk" onClick={() => go(v)} style={{ fontSize: 13 }}>{label}</button>))}
+            <button type="button" className="lnk" onClick={() => go("practice")} style={{ fontSize: 13, color: "#9eb4ff" }}>Practice sandbox</button>
           </div>
           <p style={{ color: FAINT, fontSize: 12.5, maxWidth: 440, textAlign: "right", lineHeight: 1.5 }}>A learning companion for first-time filers, not tax advice. Figures reflect AY {years[0].ay}. Always verify against your own documents.</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function PracticeStrip({ go }) {
+  return (
+    <div className="practice-strip" style={{ position: "relative", zIndex: 1 }}>
+      <div className="practice-strip-inner" style={wrap}>
+        <p>
+          <span className="sandbox-tag">Hands-on</span>
+          Walk the real e-Filing flow with fake login, editable schedules, and live return totals. Nothing is submitted.
+        </p>
+        <button type="button" className="btn btn-sandbox" onClick={() => go("practice")}>Enter practice portal →</button>
+      </div>
     </div>
   );
 }
@@ -290,8 +330,9 @@ function Home({ years, yi, setYi, go }) {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16 }}>
           {[
             ["01", "Find your form", "Four forms, one belongs to you. Answer for how you earn and we point to the exact one, and what would rule it out.", "finder", "Open the finder"],
-            ["02", "Compare regimes", "Old versus new is worth real money. Slide your income, see the tax both ways, and watch the breakdown build slab by slab.", "calc", "Run the numbers"],
-            ["03", "Fix what broke", "Refund stuck? Notice arrived? Search the problems every filer hits, each with a fix written in plain words.", "solutions", "Browse solutions"],
+            ["02", "Practice the portal", "A sandbox that looks like the real e-Filing site. Log in with fake credentials, walk the ITR wizard, and edit schedules with live totals.", "practice", "Enter the sandbox"],
+            ["03", "Compare regimes", "Old versus new is worth real money. Slide your income, see the tax both ways, and watch the breakdown build slab by slab.", "calc", "Run the numbers"],
+            ["04", "Fix what broke", "Refund stuck? Notice arrived? Search the problems every filer hits, each with a fix written in plain words.", "solutions", "Browse solutions"],
           ].map(([n, t, d, v, cta], i) => (
             <button key={t} onClick={() => go(v)} className="rise card hovr" style={{ textAlign: "left", cursor: "pointer", padding: 28, display: "flex", flexDirection: "column", gap: 12, transitionDelay: (i * 70) + "ms" }}>
               <span className="mono" style={{ fontSize: 13, color: AMBER }}>{n}</span>
