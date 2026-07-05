@@ -1,19 +1,21 @@
 // ─────────────────────────────────────────────────────────────
 //  TAXPILOT. "Your co-pilot for filing ITR."
-//  Minimal dark, multi-view app. Warm near-black + one signal amber.
+//  Neutral slate UI — between OLED black and warm paper. Amber accent.
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useMemo } from "react";
 import PracticePortal from "./PracticePortal.jsx";
 
-const BG    = "#0B0B0C";
-const CARD  = "#141416";
-const LINE  = "rgba(255,255,255,0.08)";
-const TEXT  = "#F2F1EE";
-const MUTE  = "#9A9A9F";
-const FAINT = "#6B6B70";
-const AMBER = "#FFB84D";
-const GOOD  = "#7BD88F";
+const BG      = "#0D0F14";
+const CARD    = "#141820";
+const SURFACE = "#1A1F28";
+const LINE    = "rgba(255,255,255,0.08)";
+const TEXT    = "#E8EBF0";
+const MUTE    = "#8E97A8";
+const FAINT   = "#5E6678";
+const INK     = "#0D0F14";
+const AMBER   = "#FFB84D";
+const GOOD    = "#7BD88F";
 
 const FORMS = {
   ITR1: { tag: "ITR-1", name: "Sahaj", line: "The simple one.",
@@ -144,32 +146,35 @@ const MAPPING = [
   ]},
 ];
 
-const wrap = { maxWidth: 1080, margin: "0 auto", padding: "0 24px" };
+const wrap = { maxWidth: 1080, margin: "0 auto", padding: "0 clamp(14px, 4vw, 24px)" };
 const eye = { fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase", color: FAINT, fontFamily: "'JetBrains Mono',monospace" };
 const h2s = { fontSize: "clamp(2rem,4.4vw,3.1rem)", fontWeight: 600, marginTop: 12, letterSpacing: "-0.015em", lineHeight: 1.05 };
 
 const TOOLS = [["finder","Find my form"],["mapping","What goes where"],["calc","Calculator"],["solutions","Solutions"]];
 const NAV = [["home","Home"], ...TOOLS];
-const TOOL_IDS = new Set(TOOLS.map(([id]) => id));
 
 export default function App() {
   const [view, setView] = useState("home");
+  const [menuOpen, setMenuOpen] = useState(false);
   const years = useMemo(() => filingYears(new Date()), []);
   const [yi, setYi] = useState(0);
 
-  const go = (v) => { setView(v); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const go = (v) => { setView(v); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
   if (view === "practice") {
     return <PracticePortal onExit={() => go("home")} />;
   }
 
   return (
-    <div style={{ background: BG, color: TEXT, fontFamily: "'Inter',system-ui,sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div className="app-root" style={{ background: `linear-gradient(165deg, #0F1116 0%, ${BG} 50%, #0A0C10 100%)`, color: TEXT, fontFamily: "'Inter',system-ui,sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
         *{box-sizing:border-box;margin:0}
-        html{scroll-behavior:smooth}
-        ::selection{background:${AMBER};color:#000}
+        .app-root{--text-primary:rgba(255,255,255,0.92)}
+        button{color:inherit;font-family:inherit}
+        html{scroll-behavior:smooth;background:${BG}}
+        body{background:${BG}}
+        ::selection{background:${AMBER};color:${INK}}
         .disp{font-family:'Space Grotesk',sans-serif}
         .mono{font-family:'JetBrains Mono',monospace}
         .rise{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
@@ -177,67 +182,109 @@ export default function App() {
         .viewfade{animation:vf .5s cubic-bezier(.22,1,.36,1)}
         @keyframes vf{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
         .glow{position:fixed;top:-25%;right:-12%;width:62vw;height:62vw;max-width:760px;max-height:760px;border-radius:50%;
-          background:radial-gradient(circle,rgba(255,184,77,0.11),transparent 62%);filter:blur(30px);pointer-events:none;animation:drift 22s ease-in-out infinite;z-index:0}
+          background:radial-gradient(circle,rgba(255,184,77,0.11),transparent 64%);filter:blur(32px);pointer-events:none;animation:drift 22s ease-in-out infinite;z-index:0}
         @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-6%,5%)}}
         .lnk{color:${MUTE};text-decoration:none;font-size:14.5px;transition:color .2s;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
         .lnk:hover{color:${TEXT}}.lnk.on{color:${TEXT}}
         .btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;border-radius:999px;padding:14px 26px;cursor:pointer;border:1px solid transparent;transition:transform .18s ease,background .2s,border-color .2s;display:inline-flex;align-items:center;gap:9px;text-decoration:none}
         .btn:hover{transform:translateY(-2px)}
-        .btn-p{background:${AMBER};color:#0A0A0A}.btn-p:hover{background:#FFC66E}
-        .btn-g{background:transparent;color:${TEXT};border-color:${LINE}}.btn-g:hover{border-color:rgba(255,255,255,0.3)}
-        .btn-sandbox{font-size:14px;padding:11px 20px;background:linear-gradient(135deg,rgba(43,58,143,0.22),rgba(43,58,143,0.08));color:#c8d4f5;border-color:rgba(91,124,214,0.45)}
-        .btn-sandbox:hover{border-color:rgba(123,156,230,0.7);background:linear-gradient(135deg,rgba(43,58,143,0.32),rgba(43,58,143,0.14))}
+        .btn-p{background:${AMBER};color:${INK}}.btn-p:hover{background:#FFC66E}
+        .btn-g{background:transparent;color:${TEXT};border-color:${LINE}}.btn-g:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.04)}
+        .btn-sandbox{font-size:14px;padding:11px 20px;background:rgba(59,91,180,0.14);color:#c5d4f8;border-color:rgba(100,130,210,0.35)}
+        .btn-sandbox:hover{border-color:rgba(120,150,230,0.5);background:rgba(59,91,180,0.22)}
+        .sandbox-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:rgba(59,91,180,0.22);color:#b4c4ea;border:1px solid rgba(100,130,210,0.3);margin-right:8px;vertical-align:middle}
         .portal-link{color:${FAINT};font-size:13px;text-decoration:none;white-space:nowrap;padding:8px 4px}
         .portal-link:hover{color:${MUTE}}
         .nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
         .nav-sep{width:1px;height:22px;background:${LINE};flex:none}
-        .practice-strip{background:linear-gradient(90deg,rgba(43,58,143,0.18),rgba(43,58,143,0.04) 55%,transparent);border-bottom:1px solid ${LINE}}
-        .practice-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:14px 0}
-        .practice-strip p{color:${MUTE};font-size:14px;line-height:1.45;max-width:640px}
-        .sandbox-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:rgba(43,58,143,0.35);color:#a8bce8;border:1px solid rgba(91,124,214,0.35);margin-right:8px;vertical-align:middle}
+        .nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;border:1px solid ${LINE};background:transparent;color:${TEXT};cursor:pointer;flex:none}
+        .nav-toggle svg{width:20px;height:20px}
+        .nav-drawer{display:none;border-top:1px solid ${LINE};background:rgba(12,14,19,0.98);backdrop-filter:blur(14px);padding:12px 0 18px}
+        .nav-drawer.open{display:block}
+        .nav-drawer-grid{display:grid;gap:6px}
+        .nav-drawer a,.nav-drawer button.nav-item{width:100%;text-align:left;padding:14px 16px;border-radius:12px;border:1px solid transparent;background:transparent;color:${MUTE};font-size:15px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between}
+        .nav-drawer button.nav-item.on{background:rgba(255,184,77,0.1);border-color:rgba(255,184,77,0.25);color:${TEXT}}
+        .nav-drawer a.nav-item-ext{color:${FAINT};font-size:14px}
+        .nav-drawer-divider{height:1px;background:${LINE};margin:8px 0}
+        .sandbox-long{display:inline}
+        .sandbox-short{display:none}
+        .card-title{color:var(--text-primary);font-weight:700}
+        button.card.hovr{color:var(--text-primary)}
+        .map-dest{text-align:right}
+        .verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .footer-inner{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+        .footer-links{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+        .footer-note{color:${FAINT};font-size:12.5px;max-width:440px;line-height:1.5;text-align:right}
         .tab{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;cursor:pointer;background:transparent;color:${MUTE};border:1px solid ${LINE};transition:all .2s;white-space:nowrap}
-        .tab:hover{color:${TEXT};border-color:rgba(255,255,255,0.22)}
-        .tab.on{background:${AMBER};color:#0A0A0A;border-color:${AMBER}}
-        .card{background:${CARD};border:1px solid ${LINE};border-radius:20px;transition:border-color .25s,transform .25s}
-        .hovr:hover{border-color:rgba(255,184,77,0.35);transform:translateY(-3px)}
+        .tab:hover{color:${TEXT};border-color:rgba(255,255,255,0.18)}
+        .tab.on{background:${AMBER};color:${INK};border-color:${AMBER}}
+        .card{background:${CARD};border:1px solid ${LINE};border-radius:20px;transition:border-color .25s,transform .25s,box-shadow .25s;box-shadow:0 6px 20px rgba(0,0,0,0.28)}
+        .hovr:hover{border-color:rgba(255,184,77,0.3);transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,0.32)}
         .dot{width:5px;height:5px;border-radius:50%;flex:none;margin-top:8px}
         .yearpick{display:inline-flex;align-items:center;gap:10px;background:${CARD};border:1px solid ${LINE};border-radius:999px;padding:7px 8px 7px 16px}
         .yearpick select,.fld{appearance:none;-webkit-appearance:none;background:transparent;border:none;color:${TEXT};font-family:'JetBrains Mono',monospace;cursor:pointer}
         .yearpick select{font-size:13px;font-weight:500;padding:5px 30px 5px 10px;border-radius:999px;background-image:linear-gradient(45deg,transparent 50%,${AMBER} 50%),linear-gradient(135deg,${AMBER} 50%,transparent 50%);background-position:calc(100% - 15px) center,calc(100% - 10px) center;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
         .yearpick select option,.fld option{background:${CARD};color:${TEXT}}
-        .fld{width:100%;background:#0E0E10;border:1px solid ${LINE};border-radius:12px;padding:13px 15px;font-size:15px;cursor:text}
+        .fld{width:100%;background:${SURFACE};border:1px solid ${LINE};border-radius:12px;padding:13px 15px;font-size:15px;cursor:text}
         .fld:focus,.yearpick select:focus,.search:focus,.tab:focus-visible,.btn:focus-visible,.pill:focus-visible,.page:focus-visible,.lnk:focus-visible{outline:2px solid ${AMBER};outline-offset:2px}
         input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:999px;background:${LINE};outline:none;margin-top:16px}
         input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:${AMBER};cursor:pointer;border:3px solid ${BG}}
         input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:${AMBER};cursor:pointer;border:3px solid ${BG}}
         .chk{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:14.5px;color:${MUTE};user-select:none}
         .chk input{accent-color:${AMBER};width:16px;height:16px}
-        .seg{display:inline-flex;border:1px solid ${LINE};border-radius:999px;padding:3px;background:#0E0E10}
+        .seg{display:inline-flex;border:1px solid ${LINE};border-radius:999px;padding:3px;background:${SURFACE}}
         .seg button{font-family:'JetBrains Mono',monospace;font-size:12px;padding:7px 14px;border-radius:999px;border:none;background:transparent;color:${MUTE};cursor:pointer;transition:all .18s}
-        .seg button.on{background:${AMBER};color:#0A0A0A}
+        .seg button.on{background:${AMBER};color:${INK}}
         .search{width:100%;background:${CARD};border:1px solid ${LINE};border-radius:14px;padding:16px 18px;color:${TEXT};font-size:15.5px;font-family:'Inter',sans-serif}
         .search::placeholder{color:${FAINT}}
         .pill{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:6px 12px;border-radius:999px;border:1px solid ${LINE};color:${MUTE};cursor:pointer;transition:all .18s;white-space:nowrap;background:transparent}
-        .pill:hover{color:${TEXT}}.pill.on{background:${AMBER};color:#0A0A0A;border-color:${AMBER}}
+        .pill:hover{color:${TEXT}}.pill.on{background:${AMBER};color:${INK};border-color:${AMBER}}
         .qa{cursor:pointer}.qa summary{list-style:none;padding:20px 0;display:flex;gap:16px;align-items:flex-start}
         .qa summary::-webkit-details-marker{display:none}
         .qmark{color:${AMBER};font-family:'JetBrains Mono',monospace;font-size:13px;flex:none;margin-top:3px;transition:transform .2s}
         .qa[open] .qmark{transform:rotate(90deg)}
         .page{min-width:38px;height:38px;padding:0 8px;border-radius:10px;border:1px solid ${LINE};background:transparent;color:${MUTE};cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:14px;transition:all .18s}
-        .page:hover:not(:disabled){color:${TEXT};border-color:rgba(255,255,255,0.25)}
-        .page.on{background:${AMBER};color:#0A0A0A;border-color:${AMBER}}
+        .page:hover:not(:disabled){color:${TEXT};border-color:rgba(255,255,255,0.2)}
+        .page.on{background:${AMBER};color:${INK};border-color:${AMBER}}
         .page:disabled{opacity:.35;cursor:not-allowed}
         .bar{height:100%;background:${AMBER};border-radius:4px;transition:width .5s cubic-bezier(.22,1,.36,1)}
-        @media(max-width:760px){.hide-sm{display:none !important}.nav-links{display:none}.portal-link{display:none}.hero-h{font-size:15vw !important}.two{grid-template-columns:1fr !important}.two>div:first-child{border-right:none !important;border-bottom:1px solid ${LINE}}.practice-strip-inner{align-items:flex-start}}}
+        @media(max-width:760px){
+          .hide-sm{display:none !important}
+          .nav-links{display:none}
+          .portal-link{display:none}
+          .nav-toggle{display:inline-flex}
+          .nav-bar{min-height:58px;height:auto;padding-top:10px;padding-bottom:10px;gap:10px;flex-wrap:wrap}
+          .nav-actions{margin-left:auto}
+          .btn-sandbox{padding:10px 14px;font-size:13px}
+          .sandbox-long{display:none}
+          .sandbox-short{display:inline}
+          .hero-h{font-size:15vw !important}
+          .two{grid-template-columns:1fr !important}
+          .two>div:first-child{border-right:none !important;border-bottom:1px solid ${LINE}}
+          .verdict-grid{grid-template-columns:1fr}
+          .map-dest{text-align:left;flex-basis:100% !important;margin-top:4px}
+          .footer-inner{flex-direction:column;align-items:flex-start}
+          .footer-note{text-align:left;max-width:none}
+          .footer-links{gap:14px 18px}
+          .tab{font-size:13px;padding:9px 14px}
+          .qa summary{padding:16px 0}
+          .qa p{padding:0 0 18px 0 !important}
+          .page{min-width:34px;height:34px;font-size:13px}
+        }
+        @media(max-width:420px){
+          .btn{font-size:14px;padding:12px 20px}
+          .disp.hero-h{font-size:14vw !important}
+          .yearpick{flex-wrap:wrap;gap:8px;padding:10px 12px}
+        }}
         @media(prefers-reduced-motion:reduce){.rise{transition:none;opacity:1;transform:none}.glow{animation:none}.viewfade{animation:none}}
       `}</style>
 
       <div className="glow" />
 
-      <nav style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(11,11,12,0.72)", backdropFilter: "blur(14px)", borderBottom: `1px solid ${LINE}` }}>
-        <div style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", height: 66 }}>
-          <button className="lnk disp" onClick={() => go("home")} style={{ fontWeight: 700, fontSize: 19, color: TEXT, display: "flex", alignItems: "center", gap: 9 }}>
-            <span style={{ width: 26, height: 26, borderRadius: 8, background: AMBER, color: "#0A0A0A", display: "grid", placeItems: "center", fontSize: 14, transform: "rotate(-8deg)" }}>✈</span>
+      <nav style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(12,14,19,0.9)", backdropFilter: "blur(14px)", borderBottom: `1px solid ${LINE}` }}>
+        <div className="nav-bar" style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", height: 66 }}>
+          <button className="lnk disp" onClick={() => go("home")} style={{ fontWeight: 700, fontSize: 19, color: TEXT, display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
+            <span style={{ width: 26, height: 26, borderRadius: 8, background: AMBER, color: INK, display: "grid", placeItems: "center", fontSize: 14, transform: "rotate(-8deg)" }}>✈</span>
             Tax<span style={{ color: AMBER }}>Pilot</span>
           </button>
           <div className="nav-links" style={{ display: "flex", gap: 28 }}>
@@ -245,15 +292,32 @@ export default function App() {
           </div>
           <div className="nav-actions">
             <button type="button" className="btn btn-sandbox" onClick={() => go("practice")}>
-              <span className="sandbox-tag">Sandbox</span>Practice portal
+              <span className="sandbox-tag">Sandbox</span>
+              <span className="sandbox-long">Practice portal</span>
+              <span className="sandbox-short">Portal</span>
             </button>
             <span className="nav-sep hide-sm" aria-hidden="true" />
             <a className="portal-link hide-sm" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer">Real portal ↗</a>
+            <button type="button" className="nav-toggle" onClick={() => setMenuOpen((o) => !o)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close menu" : "Open menu"}>
+              {menuOpen ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+              )}
+            </button>
+          </div>
+        </div>
+        <div className={"nav-drawer" + (menuOpen ? " open" : "")} style={wrap}>
+          <div className="nav-drawer-grid">
+            <button type="button" className={"nav-item" + (view === "home" ? " on" : "")} onClick={() => go("home")}>Home</button>
+            {TOOLS.map(([v, label]) => (
+              <button key={v} type="button" className={"nav-item" + (view === v ? " on" : "")} onClick={() => go(v)}>{label}</button>
+            ))}
+            <div className="nav-drawer-divider" />
+            <a className="nav-item nav-item-ext" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer">Real e-Filing portal ↗</a>
           </div>
         </div>
       </nav>
-
-      {TOOL_IDS.has(view) && <PracticeStrip go={go} />}
 
       <div className="viewfade" key={view}>
         {view === "home" && <Home years={years} yi={yi} setYi={setYi} go={go} />}
@@ -264,29 +328,14 @@ export default function App() {
       </div>
 
       <footer style={{ borderTop: `1px solid ${LINE}`, position: "relative", zIndex: 1 }}>
-        <div style={{ ...wrap, paddingTop: 30, paddingBottom: 30, display: "flex", flexWrap: "wrap", gap: 16, justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", gap: 22, flexWrap: "wrap", alignItems: "center" }}>
+        <div className="footer-inner" style={{ ...wrap, paddingTop: 30, paddingBottom: 30 }}>
+          <div className="footer-links">
             <span className="disp" style={{ fontWeight: 700, fontSize: 15 }}>Tax<span style={{ color: AMBER }}>Pilot</span></span>
             {NAV.map(([v, label]) => (<button key={v} className="lnk" onClick={() => go(v)} style={{ fontSize: 13 }}>{label}</button>))}
-            <button type="button" className="lnk" onClick={() => go("practice")} style={{ fontSize: 13, color: "#9eb4ff" }}>Practice sandbox</button>
           </div>
-          <p style={{ color: FAINT, fontSize: 12.5, maxWidth: 440, textAlign: "right", lineHeight: 1.5 }}>A learning companion for first-time filers, not tax advice. Figures reflect AY {years[0].ay}. Always verify against your own documents.</p>
+          <p className="footer-note">A learning companion for first-time filers, not tax advice. Figures reflect AY {years[0].ay}. Always verify against your own documents.</p>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function PracticeStrip({ go }) {
-  return (
-    <div className="practice-strip" style={{ position: "relative", zIndex: 1 }}>
-      <div className="practice-strip-inner" style={wrap}>
-        <p>
-          <span className="sandbox-tag">Hands-on</span>
-          Walk the real e-Filing flow with fake login, editable schedules, and live return totals. Nothing is submitted.
-        </p>
-        <button type="button" className="btn btn-sandbox" onClick={() => go("practice")}>Enter practice portal →</button>
-      </div>
     </div>
   );
 }
@@ -330,13 +379,12 @@ function Home({ years, yi, setYi, go }) {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16 }}>
           {[
             ["01", "Find your form", "Four forms, one belongs to you. Answer for how you earn and we point to the exact one, and what would rule it out.", "finder", "Open the finder"],
-            ["02", "Practice the portal", "A sandbox that looks like the real e-Filing site. Log in with fake credentials, walk the ITR wizard, and edit schedules with live totals.", "practice", "Enter the sandbox"],
-            ["03", "Compare regimes", "Old versus new is worth real money. Slide your income, see the tax both ways, and watch the breakdown build slab by slab.", "calc", "Run the numbers"],
-            ["04", "Fix what broke", "Refund stuck? Notice arrived? Search the problems every filer hits, each with a fix written in plain words.", "solutions", "Browse solutions"],
+            ["02", "Compare regimes", "Old versus new is worth real money. Slide your income, see the tax both ways, and watch the breakdown build slab by slab.", "calc", "Run the numbers"],
+            ["03", "Fix what broke", "Refund stuck? Notice arrived? Search the problems every filer hits, each with a fix written in plain words.", "solutions", "Browse solutions"],
           ].map(([n, t, d, v, cta], i) => (
-            <button key={t} onClick={() => go(v)} className="rise card hovr" style={{ textAlign: "left", cursor: "pointer", padding: 28, display: "flex", flexDirection: "column", gap: 12, transitionDelay: (i * 70) + "ms" }}>
+            <button key={t} type="button" onClick={() => go(v)} className="rise card hovr" style={{ textAlign: "left", cursor: "pointer", padding: 28, display: "flex", flexDirection: "column", gap: 12, transitionDelay: (i * 70) + "ms" }}>
               <span className="mono" style={{ fontSize: 13, color: AMBER }}>{n}</span>
-              <h3 className="disp" style={{ fontSize: 22, fontWeight: 600 }}>{t}</h3>
+              <h3 className="disp card-title" style={{ fontSize: 22 }}>{t}</h3>
               <p style={{ color: MUTE, fontSize: 14.5, lineHeight: 1.55, flex: 1 }}>{d}</p>
               <span className="disp" style={{ fontSize: 14, fontWeight: 600, color: AMBER, marginTop: 6 }}>{cta} →</span>
             </button>
@@ -405,7 +453,7 @@ function Finder() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 16 }}>
           {DOCS.filter((d) => d.forms.includes(active)).map((d, i) => (
             <div key={d.n} className="rise card" style={{ padding: 24, transitionDelay: (i * 40) + "ms" }}>
-              <div className="disp" style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>{d.n}</div>
+              <div className="disp card-title" style={{ fontSize: 18, marginBottom: 8 }}>{d.n}</div>
               <p style={{ color: MUTE, fontSize: 14.5, lineHeight: 1.55 }}>{d.why}</p>
               <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${LINE}`, display: "flex", gap: 9 }}>
                 <span className="mono" style={{ color: AMBER, fontSize: 12, flex: "none", marginTop: 1 }}>CHECK</span>
@@ -451,7 +499,7 @@ function MappingPage({ go }) {
           {groups.map((g, gi) => (
             <div key={g.src} className="rise card" style={{ padding: "clamp(20px,3vw,30px)", transitionDelay: (gi * 50) + "ms" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: 10, marginBottom: 18, paddingBottom: 16, borderBottom: `1px solid ${LINE}` }}>
-                <div className="disp" style={{ fontSize: 19, fontWeight: 600 }}>{g.src}</div>
+                <div className="disp card-title" style={{ fontSize: 19 }}>{g.src}</div>
                 <span className="mono" style={{ ...eye, color: AMBER }}>{g.tag}</span>
               </div>
               {g.rows.map((r, ri) => (
@@ -459,7 +507,7 @@ function MappingPage({ go }) {
                   <div style={{ display: "flex", gap: 12, alignItems: "baseline", flexWrap: "wrap" }}>
                     <span style={{ fontSize: 15, fontWeight: 500, flex: "1 1 220px", minWidth: 0 }}>{r.from}</span>
                     <span className="mono" style={{ fontSize: 12, color: FAINT, flex: "none" }}>{"\u2192"}</span>
-                    <span className="mono" style={{ fontSize: 12.5, color: AMBER, flex: "1 1 240px", textAlign: "right", lineHeight: 1.5 }}>{r.to}</span>
+                    <span className="mono map-dest" style={{ fontSize: 12.5, color: AMBER, flex: "1 1 240px", lineHeight: 1.5 }}>{r.to}</span>
                   </div>
                   <p style={{ color: FAINT, fontSize: 13, lineHeight: 1.5, marginTop: 6 }}>{r.note}</p>
                 </div>
@@ -524,7 +572,7 @@ function CalculatorPage({ ay }) {
 
           {/* verdict + breakdown */}
           <div style={{ padding: "clamp(24px,3.5vw,38px)" }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="verdict-grid">
               <Verdict label="New regime" total={N.total} win={better === "new"} />
               <Verdict label="Old regime" total={O.total} win={better === "old"} />
             </div>
@@ -556,7 +604,7 @@ function CalculatorPage({ ay }) {
                           <span className="mono">{inrShort(r.lo)}–{r.hi === Infinity ? "∞" : inrShort(r.hi)} @ {(r.rate * 100)}%</span>
                           <span className="mono" style={{ color: TEXT }}>{inr(r.t)}</span>
                         </div>
-                        <div style={{ height: 8, background: "rgba(255,255,255,0.05)", borderRadius: 4 }}><div className="bar" style={{ width: (maxT ? (r.t / maxT * 100) : 0) + "%" }} /></div>
+                        <div style={{ height: 8, background: "rgba(255,255,255,0.06)", borderRadius: 4 }}><div className="bar" style={{ width: (maxT ? (r.t / maxT * 100) : 0) + "%" }} /></div>
                       </div>
                     );
                   })}
@@ -631,7 +679,7 @@ function SolutionsPage() {
         <div className="viewfade" key={cur + query + cat}>
           {shown.length === 0 ? (
             <div className="card" style={{ padding: 48, textAlign: "center" }}>
-              <p className="disp" style={{ fontSize: 18, fontWeight: 600 }}>Nothing matches that yet.</p>
+              <p className="disp card-title" style={{ fontSize: 18 }}>Nothing matches that yet.</p>
               <p style={{ color: MUTE, fontSize: 14.5, marginTop: 8 }}>Try a broader word like "refund", "mismatch" or "notice", or clear the filter.</p>
             </div>
           ) : shown.map((s) => (

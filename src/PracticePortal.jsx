@@ -201,7 +201,7 @@ export default function PracticePortal({ onExit }) {
   const shared = { coach, data, set, ay, setAy, mode, setMode, status, setStatus, form, setForm, go, sel, setSel, conf, setConf, setEdit, R };
 
   return (
-    <div style={{ background: authed ? BG : "#fbfcfe", minHeight: "100vh", color: INK, fontFamily: "'Open Sans',system-ui,sans-serif" }}>
+    <div style={{ background: authed ? BG : "#fbfcfe", minHeight: "100vh", color: INK, fontFamily: "'Open Sans',system-ui,sans-serif", overflowX: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
         *{box-sizing:border-box;margin:0}
@@ -257,14 +257,45 @@ export default function PracticePortal({ onExit }) {
         .efmenu{position:absolute;top:100%;left:0;background:#fff;border:1px solid ${LINE};border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.18);min-width:260px;z-index:50;overflow:hidden}
         .efitem{display:block;width:100%;text-align:left;padding:13px 18px;font-size:14.5px;color:${INK};background:#fff;border:none;border-bottom:1px solid ${LINE};cursor:pointer}
         .efitem:last-child{border-bottom:none}.efitem:hover{background:${TINT}}
-        @media(max-width:860px){.hide-sm{display:none !important}.grid2{grid-template-columns:1fr !important}.schedwrap{grid-template-columns:1fr !important}}
+        .page-main{padding:20px clamp(14px,4vw,22px) 90px}
+        .top-emblem{width:44px;height:44px}
+        .top-brand-title{font-size:22px;font-weight:700;color:${NAVY}}
+        .top-brand-sub{font-size:11.5px;color:${NAVY}}
+        .exit-pilot{position:fixed;top:14px;left:14px;z-index:70;background:#0D0F14;color:#FFB84D;border:1px solid rgba(255,184,77,0.35);border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:0.04em;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+        .navbtns{display:flex;justify-content:space-between;margin-top:30px;flex-wrap:wrap;gap:12px}
+        @media(max-width:860px){
+          .hide-sm{display:none !important}
+          .grid2,.schedwrap{grid-template-columns:1fr !important}
+          .grid2>div:first-child{border-right:none !important;border-bottom:1px solid ${LINE}}
+          .top-emblem{width:36px !important;height:36px !important;font-size:8px !important}
+          .top-brand-title{font-size:17px !important}
+          .top-brand-sub{font-size:10px !important}
+          .navlink{padding:14px 0;font-size:14px}
+          .steptri{overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;max-width:100%}
+          .stepline{min-width:20px}
+          .sandbox{bottom:auto;top:10px;right:10px;left:auto;font-size:9px;padding:5px 10px;max-width:calc(100% - 120px);text-align:center}
+          .exit-pilot{top:auto;bottom:14px;left:14px;font-size:11px;padding:7px 12px}
+          .ovl{padding:0;align-items:flex-end}
+          .sheet{border-radius:12px 12px 0 0;max-height:92vh;overflow:auto}
+          .schedrow{padding:14px 4px;gap:12px}
+          .codebox{width:44px;height:44px;font-size:11px}
+          .navbtns{flex-direction:column-reverse}
+          .navbtns .btn{width:100%;justify-content:center}
+          .page-main{padding-bottom:72px}
+        }
+        @media(max-width:480px){
+          .opt{padding:14px 16px;font-size:15px}
+          .qcard{padding:14px 12px}
+          .fld{font-size:16px}
+          .btn{font-size:14px;padding:11px 20px}
+        }
         @media(prefers-reduced-motion:reduce){.coach,.ovl{animation:none}}
       `}</style>
 
       <div className="watermark"><span>PRACTICE</span></div>
       <div className="sandbox">SANDBOX · NOT THE REAL PORTAL</div>
       {onExit && (
-        <button type="button" onClick={onExit} style={{ position: "fixed", top: 14, left: 14, zIndex: 70, background: "#0B0B0C", color: "#FFB84D", border: "1px solid rgba(255,184,77,0.35)", borderRadius: 999, padding: "8px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer", letterSpacing: "0.04em", boxShadow: "0 4px 16px rgba(0,0,0,0.2)" }}>
+        <button type="button" className="exit-pilot" onClick={onExit}>
           {"\u2190"} TaxPilot
         </button>
       )}
@@ -303,12 +334,12 @@ function TopBar({ authed, data, coach, setCoach, view, go }) {
   return (
     <>
       <div style={{ background: "#fff", borderBottom: `1px solid ${LINE}` }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "10px 22px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-          <button className="link" onClick={() => go(authed ? "dashboard" : "login1")} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <span style={{ width: 44, height: 44, borderRadius: "50%", border: `2px solid ${RED}`, display: "grid", placeItems: "center", fontSize: 9, fontWeight: 800, color: RED, textAlign: "center", lineHeight: 1 }}>ITD</span>
-            <span style={{ textAlign: "left" }}>
-              <span style={{ fontSize: 22, fontWeight: 700, color: NAVY }}>e-Filing <span style={{ color: RED, fontStyle: "italic", fontSize: 13 }}>Anywhere Anytime</span></span>
-              <span style={{ display: "block", fontSize: 11.5, color: NAVY, borderTop: `1px solid ${GREEN}`, paddingTop: 2 }}>Income Tax Department, Government of India</span>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "10px clamp(14px,4vw,22px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+          <button className="link" onClick={() => go(authed ? "dashboard" : "login1")} style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+            <span className="top-emblem" style={{ borderRadius: "50%", border: `2px solid ${RED}`, display: "grid", placeItems: "center", fontSize: 9, fontWeight: 800, color: RED, textAlign: "center", lineHeight: 1, flexShrink: 0 }}>ITD</span>
+            <span style={{ textAlign: "left", minWidth: 0 }}>
+              <span className="top-brand-title">e-Filing <span style={{ color: RED, fontStyle: "italic", fontSize: 13 }}>Anywhere Anytime</span></span>
+              <span className="top-brand-sub" style={{ display: "block", borderTop: `1px solid ${GREEN}`, paddingTop: 2 }}>Income Tax Department, Government of India</span>
             </span>
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 14, color: INK, flexWrap: "wrap" }}>
@@ -332,7 +363,7 @@ function TopBar({ authed, data, coach, setCoach, view, go }) {
 
       {authed && (
         <nav style={{ background: NAVY, position: "sticky", top: 0, zIndex: 40 }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 22px", display: "flex", alignItems: "center", gap: 26, flexWrap: "wrap" }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(14px,4vw,22px)", display: "flex", alignItems: "center", gap: 26, flexWrap: "wrap", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
             <button className={"navlink" + (view === "dashboard" ? " on" : "")} onClick={() => go("dashboard")}>Dashboard</button>
             <EfileMenu view={view} inWizard={inWizard} go={go} />
             <button className="navlink hide-sm">Authorised Partners {"\u25BE"}</button>
@@ -341,7 +372,7 @@ function TopBar({ authed, data, coach, setCoach, view, go }) {
             <button className="navlink hide-sm">Pending Actions {"\u25BE"}</button>
             <button className="navlink hide-sm">Grievances {"\u25BE"}</button>
             <button className="navlink hide-sm">Help</button>
-            <span style={{ marginLeft: "auto", color: "#fff", fontSize: 13, display: "inline-flex", alignItems: "center" }}>
+            <span className="hide-sm" style={{ marginLeft: "auto", color: "#fff", fontSize: 13, display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
               Session Time <span className="sesbox"><b>1</b><b>4</b>:<b>5</b><b>9</b></span>
             </span>
           </div>
@@ -384,7 +415,7 @@ function Mandatory() {
 function Login1({ data, go, coach }) {
   const [uid, setUid] = useState("");
   return (
-    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 22px 80px" }}>
+    <main className="page-main" style={{ maxWidth: 1200, margin: "0 auto" }}>
       <Mandatory />
       <div className="card grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, padding: 0, overflow: "hidden" }}>
         <div style={{ padding: "clamp(28px,4vw,52px)", borderRight: `1px solid ${LINE}` }}>
@@ -419,7 +450,7 @@ function Login2({ data, go, coach }) {
   const [show, setShow] = useState(false);
   const ready = ok && pw.length > 0;
   return (
-    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 22px 80px" }}>
+    <main className="page-main" style={{ maxWidth: 1200, margin: "0 auto" }}>
       <Mandatory />
       <div className="card grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, padding: 0, overflow: "hidden" }}>
         <div style={{ padding: "clamp(28px,4vw,52px)" }}>
@@ -455,7 +486,7 @@ function Login2({ data, go, coach }) {
 // ── Dashboard ────────────────────────────────────────────────
 function Dashboard({ data, go, coach }) {
   return (
-    <main style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 22px 80px" }}>
+    <main className="page-main" style={{ maxWidth: 1200, margin: "0 auto" }}>
       <Crumbs items={["Dashboard"]} />
       <Coach show={coach} title="You are on the dashboard">This mirrors the real e-Filing home. To file a return, open <strong>e-File</strong> in the blue bar, or use the shortcut button below.</Coach>
       <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 22, alignItems: "start" }} className="grid2">
@@ -506,11 +537,11 @@ function Dashboard({ data, go, coach }) {
 }
 
 function Page({ children, maxWidth = 1200 }) {
-  return <main style={{ maxWidth, margin: "0 auto", padding: "20px 22px 90px" }}>{children}</main>;
+  return <main className="page-main" style={{ maxWidth, margin: "0 auto" }}>{children}</main>;
 }
 function NavBtns({ onBack, onNext, nextLabel = "Continue", disabled }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", marginTop: 30, flexWrap: "wrap", gap: 12 }}>
+    <div className="navbtns">
       <button className="btn btn-o" onClick={onBack}>{"\u2039"} Back</button>
       <button className="btn btn-p" onClick={onNext} disabled={disabled}>{nextLabel} {"\u203A"}</button>
     </div>
@@ -1190,7 +1221,7 @@ function EpayTax({ data, set, go, coach, R }) {
 function Footer({ authed }) {
   return (
     <footer style={{ background: authed ? "#eceff5" : "#fff", borderTop: `1px solid ${LINE}`, position: "relative", zIndex: 1 }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "22px", textAlign: "center", color: MUTE, fontSize: 13, lineHeight: 1.7 }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "22px clamp(14px,4vw,22px)", textAlign: "center", color: MUTE, fontSize: 13, lineHeight: 1.7 }}>
         <div style={{ marginBottom: 6 }}><span className="link">Feedback</span> | <span className="link">Website Policies</span> | <span className="link">Accessibility Statement</span> | <span className="link">Site Map</span> | <span className="link">Browser Support</span></div>
         This is a <b>practice sandbox</b> for learning, not the real portal. Nothing is submitted to the Income Tax Department.
         <div style={{ marginTop: 4 }}>Best viewed in 1024 x 768 with the latest Chrome, Firefox, Safari or Edge.</div>
