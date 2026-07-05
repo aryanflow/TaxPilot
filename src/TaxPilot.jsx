@@ -165,14 +165,14 @@ export default function App() {
   }
 
   return (
-    <div className="app-root" style={{ background: `linear-gradient(165deg, #0B0C10 0%, ${BG} 48%, #060708 100%)`, color: TEXT, fontFamily: "'Inter',system-ui,sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div className="app-root" style={{ background: `linear-gradient(165deg, #0B0C10 0%, ${BG} 48%, #060708 100%)`, color: TEXT, fontFamily: "'Inter',system-ui,sans-serif", minHeight: "100vh" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
         *{box-sizing:border-box;margin:0}
         .app-root{--text-primary:rgba(255,255,255,0.92)}
         button{color:inherit;font-family:inherit}
-        html{scroll-behavior:smooth;background:${BG}}
-        body{background:${BG}}
+        html{scroll-behavior:smooth;scroll-padding-top:70px;background:${BG};overflow-x:clip}
+        body{background:${BG};overflow-x:clip;min-height:100vh}
         ::selection{background:${AMBER};color:${INK}}
         .disp{font-family:'Space Grotesk',sans-serif}
         .mono{font-family:'JetBrains Mono',monospace}
@@ -247,6 +247,8 @@ export default function App() {
         .page.on{background:${AMBER};color:${INK};border-color:${AMBER}}
         .page:disabled{opacity:.35;cursor:not-allowed}
         .bar{height:100%;background:${AMBER};border-radius:4px;transition:width .5s cubic-bezier(.22,1,.36,1)}
+        .site-nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06)}
+        .hero-section{padding-top:clamp(48px,5vw,72px) !important}
         @media(max-width:760px){
           .hide-sm{display:none !important}
           .nav-links{display:none}
@@ -279,7 +281,7 @@ export default function App() {
 
       <div className="glow" />
 
-      <nav style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(9,10,14,0.94)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${LINE}` }}>
+      <nav className="site-nav">
         <div className="nav-bar" style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", height: 66 }}>
           <button className="lnk disp" onClick={() => go("home")} style={{ fontWeight: 700, fontSize: 19, color: TEXT, display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
             <span style={{ width: 26, height: 26, borderRadius: 8, background: AMBER, color: INK, display: "grid", placeItems: "center", fontSize: 14, transform: "rotate(-8deg)" }}>✈</span>
@@ -338,8 +340,8 @@ function Home({ years, yi, setYi, go }) {
   useReveal("home");
   return (
     <div style={{ position: "relative", zIndex: 1 }}>
-      <header style={{ ...wrap, paddingTop: "clamp(64px,11vw,120px)", paddingBottom: "clamp(32px,5vw,48px)" }}>
-        <div className="rise in" style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 30 }}>
+      <header className="hero-section" style={{ ...wrap, paddingTop: "clamp(48px,5vw,72px)", paddingBottom: "clamp(28px,4vw,40px)" }}>
+        <div className="rise in" style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 20 }}>
           <div className="yearpick">
             <span style={{ ...eye, color: FAINT }}>Filing for</span>
             <select value={yi} onChange={(e) => setYi(Number(e.target.value))} aria-label="Choose the year you are filing for">
@@ -350,7 +352,7 @@ function Home({ years, yi, setYi, go }) {
             <span style={{ width: 6, height: 6, borderRadius: "50%", background: AMBER }} />{yr.current ? "Return now open" : "Belated / updated return"}
           </span>
         </div>
-        <h1 className="disp hero-h" style={{ fontSize: "clamp(3rem,8.4vw,6.6rem)", fontWeight: 600, lineHeight: 0.96, letterSpacing: "-0.025em", maxWidth: 920 }}>
+        <h1 className="disp hero-h" style={{ fontSize: "clamp(3rem,8.4vw,6.6rem)", fontWeight: 600, lineHeight: 0.96, letterSpacing: "-0.025em", maxWidth: 920, marginTop: 0 }}>
           Tax season<br />without the <span style={{ color: AMBER }}>dread.</span>
         </h1>
         <p style={{ color: MUTE, fontSize: "clamp(1.1rem,2vw,1.32rem)", lineHeight: 1.55, maxWidth: 552, marginTop: 28 }}>
