@@ -2,7 +2,7 @@
 
 **Your co-pilot for filing ITR.**
 
-TaxPilot is a single-page React app that helps first-time Indian income-tax filers understand the e-filing portal — without drowning in jargon. Pick your ITR form, see where each document number goes, compare old vs new tax regime, and look up fixes for the problems people actually hit.
+TaxPilot is a single-page React app that helps first-time Indian income-tax filers understand the e-filing portal without drowning in jargon. Pick your ITR form, see where each document number goes, compare old vs new tax regime, and look up fixes for the problems people actually hit.
 
 > **Not tax advice.** Figures reflect AY 2026-27 (FY 2025-26). Always verify against your own Form 16, 26AS, and AIS before filing.
 
@@ -14,37 +14,37 @@ TaxPilot is a single-page React app that helps first-time Indian income-tax file
 
 Landing page with assessment-year picker, skim-friendly feature grid, and a link to the official e-Filing portal.
 
-![TaxPilot home — hero, year picker, and feature grid](docs/screenshots/home.png)
+![TaxPilot home: hero, year picker, and feature grid](docs/screenshots/home.png)
 
 ### Find my form
 
 Side-by-side breakdown of ITR-1 through ITR-4: who each form fits, income limits, what rules you out, and which documents you need.
 
-![ITR form finder — ITR tabs, fit/break lists, and required documents](docs/screenshots/finder.png)
+![ITR form finder: ITR tabs, fit/break lists, and required documents](docs/screenshots/finder.png)
 
 ### What goes where
 
 Document-to-schedule mapping: where numbers from Form 16, 26AS, bank certificates, and broker statements land in your return.
 
-![Document mapping — Form 16 and 26AS rows mapped to ITR schedules](docs/screenshots/mapping.png)
+![Document mapping: Form 16 and 26AS rows mapped to ITR schedules](docs/screenshots/mapping.png)
 
 ### Calculator
 
 Old vs new regime comparison with slab-by-slab breakdown, standard deduction, rebates, and marginal relief for FY 2025-26.
 
-![Tax regime calculator — income slider, side-by-side tax breakdown](docs/screenshots/calculator.png)
+![Tax regime calculator: income slider, side-by-side tax breakdown](docs/screenshots/calculator.png)
 
 ### Solutions
 
-Searchable library of common filing problems — refunds stuck, TDS mismatches, defective notices, verification failures — each with a plain-language fix.
+Searchable library of common filing problems: refunds stuck, TDS mismatches, defective notices, verification failures. Each with a plain-language fix.
 
-![Solutions library — search, category filters, and expandable Q&A](docs/screenshots/solutions.png)
+![Solutions library: search, category filters, and expandable Q&A](docs/screenshots/solutions.png)
 
 ### Practice portal
 
-Sandbox that mirrors the e-Filing flow — fake login, ITR wizard, editable schedules, and live return totals. Nothing is submitted.
+Sandbox that mirrors the e-Filing flow: fake login, ITR wizard, editable schedules, and live return totals. Nothing is submitted.
 
-![Practice e-Filing portal — sandbox login and ITR filing wizard](docs/screenshots/practice.png)
+![Practice e-Filing portal: sandbox login and ITR filing wizard](docs/screenshots/practice.png)
 
 ---
 
@@ -57,16 +57,16 @@ Sandbox that mirrors the e-Filing flow — fake login, ITR wizard, editable sche
 | **What goes where** | Maps source documents (Form 16, 26AS, AIS, broker statements) to the exact ITR schedule fields |
 | **Calculator** | Computes tax under old and new regime with slab detail, 87A rebate, and marginal relief |
 | **Solutions** | Searchable, filterable Q&A for refunds, payments, mismatches, notices, forms, verification, regimes, deadlines |
-| **Practice portal** | Full mock e-Filing sandbox with coach marks, editable schedules, and live totals — no real submission |
+| **Practice portal** | Full mock e-Filing sandbox with coach marks, editable schedules, and live totals. No real submission. |
 
 ---
 
 ## Tech stack
 
-- **React 19** — UI and client-side state
-- **Vite 6** — dev server and production build
-- **No backend** — all data is static constants in `src/TaxPilot.jsx`
-- **No UI library** — custom dark theme with inline styles and a single `<style>` block
+- **React 19**: UI and client-side state
+- **Vite 6**: dev server and production build
+- **No backend**: all data is static constants in `src/TaxPilot.jsx`
+- **No UI library**: custom dark theme with inline styles and a single `<style>` block
 
 ---
 
@@ -110,7 +110,7 @@ TaxPilot/
 ├── scripts/
 │   └── capture-screenshots.mjs
 ├── src/
-│   ├── main.jsx             # Entry point — mounts <App /> into #root
+│   ├── main.jsx             # Entry point: mounts <App /> into #root
 │   ├── TaxPilot.jsx         # Main app: data, tax engine, all views
 │   └── PracticePortal.jsx   # Mock e-Filing sandbox
 ├── index.html               # HTML shell + favicon link
@@ -128,13 +128,13 @@ TaxPilot/
 
 ## Regenerating screenshots
 
-Screenshots are captured with Playwright at **1280×900 viewport** (above-the-fold only — not full-page scrolls). Chromium installs on first `npm install` via the `playwright` dev dependency.
+Screenshots are captured with Playwright at **1280×900 viewport** (above-the-fold only, not full-page scrolls). Chromium installs on first `npm install` via the `playwright` dev dependency.
 
 ```bash
-# Terminal 1 — keep the dev server running
+# Terminal 1: keep the dev server running
 npm run dev
 
-# Terminal 2 — capture all six views
+# Terminal 2: capture all six views
 npm run screenshots
 ```
 

@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────
 //  TAXPILOT. "Your co-pilot for filing ITR."
-//  Neutral slate UI — deep near-black base. Amber accent.
+//  Neutral slate UI. Deep near-black base. Amber accent.
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useMemo } from "react";
@@ -113,12 +113,12 @@ const inrShort = (n) => n >= 10000000 ? (n/10000000).toFixed(2)+"Cr" : n >= 1000
 // Grouped by the paper in your hand; each row tagged with the forms it applies to.
 const MAPPING = [
   { src: "Form 16 (from your employer)", tag: "SALARY", rows: [
-    { from: "Gross salary — Part B, 17(1)", to: "Salary > Gross salary u/s 17(1)", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "The pre-filled figure should match this. Read Part B, not just Part A." },
-    { from: "Perquisites — 17(2)", to: "Salary > Perquisites u/s 17(2)", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Car, ESOP, rent-free housing. Cross-check with Form 12BA. Zero means leave it blank." },
+    { from: "Gross salary, Part B, 17(1)", to: "Salary > Gross salary u/s 17(1)", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "The pre-filled figure should match this. Read Part B, not just Part A." },
+    { from: "Perquisites, 17(2)", to: "Salary > Perquisites u/s 17(2)", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Car, ESOP, rent-free housing. Cross-check with Form 12BA. Zero means leave it blank." },
     { from: "HRA / LTA exemption", to: "Allowances exempt u/s 10", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Old regime only. The new regime ignores these, so they stay taxable there." },
     { from: "Standard deduction", to: "Auto-applied by the portal", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Rs 75,000 new, Rs 50,000 old. Do not enter it yourself." },
     { from: "Professional tax", to: "Deduction from salary", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Old regime only, capped at Rs 2,500." },
-    { from: "TDS on salary — Part A", to: "Taxes Paid > TDS (Schedule TDS1)", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Must reconcile with Form 26AS. Claim only what 26AS shows." },
+    { from: "TDS on salary, Part A", to: "Taxes Paid > TDS (Schedule TDS1)", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Must reconcile with Form 26AS. Claim only what 26AS shows." },
   ]},
   { src: "Form 26AS / AIS", tag: "TAX CREDIT", rows: [
     { from: "TDS by employer / others", to: "Taxes Paid > Schedule TDS1 & TDS2", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "26AS is the source of truth for tax credit. Mismatches delay refunds." },
@@ -130,14 +130,14 @@ const MAPPING = [
     { from: "Fixed deposit interest", to: "Other Sources > Interest from deposits", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Fully taxable. Report the accrued amount even if not yet paid out." },
   ]},
   { src: "Broker / AMC capital gains statement", tag: "CAPITAL GAINS", rows: [
-    { from: "Equity & equity MF — short term", to: "Schedule CG > 111A", forms: ["ITR2","ITR3"], note: "20% flat. Rules out ITR-1." },
-    { from: "Equity & equity MF — long term", to: "Schedule CG > 112A", forms: ["ITR2","ITR3"], note: "12.5% above Rs 1.25 lakh/year. Needs scrip-wise detail." },
-    { from: "Property / gold / unlisted — long term", to: "Schedule CG > 112", forms: ["ITR2","ITR3"], note: "12.5% without indexation. Report buyer and sale-deed details for property." },
+    { from: "Equity & equity MF, short term", to: "Schedule CG > 111A", forms: ["ITR2","ITR3"], note: "20% flat. Rules out ITR-1." },
+    { from: "Equity & equity MF, long term", to: "Schedule CG > 112A", forms: ["ITR2","ITR3"], note: "12.5% above Rs 1.25 lakh/year. Needs scrip-wise detail." },
+    { from: "Property / gold / unlisted, long term", to: "Schedule CG > 112", forms: ["ITR2","ITR3"], note: "12.5% without indexation. Report buyer and sale-deed details for property." },
     { from: "F&O / intraday", to: "Business income (Schedule BP)", forms: ["ITR3"], note: "This is business income, not capital gains. It forces ITR-3." },
   ]},
   { src: "Deduction proofs (80C / 80D / home loan)", tag: "OLD REGIME", rows: [
-    { from: "80C — PF, ELSS, LIC, tuition", to: "Deductions > Chapter VI-A > 80C", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Capped at Rs 1.5 lakh. Old regime only." },
-    { from: "80D — health insurance", to: "Deductions > 80D", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Up to Rs 25,000, or Rs 50,000 if senior. Old regime only." },
+    { from: "80C, PF, ELSS, LIC, tuition", to: "Deductions > Chapter VI-A > 80C", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Capped at Rs 1.5 lakh. Old regime only." },
+    { from: "80D, health insurance", to: "Deductions > 80D", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Up to Rs 25,000, or Rs 50,000 if senior. Old regime only." },
     { from: "Home loan interest", to: "House Property > Interest u/s 24(b)", forms: ["ITR1","ITR2","ITR3","ITR4"], note: "Up to Rs 2 lakh for self-occupied. Old regime only." },
   ]},
   { src: "Business books (P&L, balance sheet)", tag: "BUSINESS", rows: [
@@ -151,7 +151,6 @@ const eye = { fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase",
 const h2s = { fontSize: "clamp(2rem,4.4vw,3.1rem)", fontWeight: 600, marginTop: 12, letterSpacing: "-0.015em", lineHeight: 1.05 };
 
 const TOOLS = [["finder","Find my form"],["mapping","What goes where"],["calc","Calculator"],["solutions","Solutions"]];
-const NAV = [["home","Home"], ...TOOLS];
 
 export default function App() {
   const [view, setView] = useState("home");
@@ -213,9 +212,8 @@ export default function App() {
         button.card.hovr{color:var(--text-primary)}
         .map-dest{text-align:right}
         .verdict-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        .footer-inner{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
-        .footer-links{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
-        .footer-note{color:${FAINT};font-size:12.5px;max-width:440px;line-height:1.5;text-align:right}
+        .footer-inner{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:center}
+        .footer-note{color:${FAINT};font-size:12.5px;max-width:520px;line-height:1.5;margin:0}
         .tab{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;cursor:pointer;background:transparent;color:${MUTE};border:1px solid ${LINE};transition:all .2s;white-space:nowrap}
         .tab:hover{color:${TEXT};border-color:rgba(255,255,255,0.14)}
         .tab.on{background:${AMBER};color:${INK};border-color:${AMBER}}
@@ -265,8 +263,7 @@ export default function App() {
           .verdict-grid{grid-template-columns:1fr}
           .map-dest{text-align:left;flex-basis:100% !important;margin-top:4px}
           .footer-inner{flex-direction:column;align-items:flex-start}
-          .footer-note{text-align:left;max-width:none}
-          .footer-links{gap:14px 18px}
+          .footer-note{max-width:none}
           .tab{font-size:13px;padding:9px 14px}
           .qa summary{padding:16px 0}
           .qa p{padding:0 0 18px 0 !important}
@@ -297,8 +294,6 @@ export default function App() {
               <span className="sandbox-long">Practice portal</span>
               <span className="sandbox-short">Portal</span>
             </button>
-            <span className="nav-sep hide-sm" aria-hidden="true" />
-            <a className="portal-link hide-sm" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer">Real portal ↗</a>
             <button type="button" className="nav-toggle" onClick={() => setMenuOpen((o) => !o)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close menu" : "Open menu"}>
               {menuOpen ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
@@ -314,8 +309,7 @@ export default function App() {
             {TOOLS.map(([v, label]) => (
               <button key={v} type="button" className={"nav-item" + (view === v ? " on" : "")} onClick={() => go(v)}>{label}</button>
             ))}
-            <div className="nav-drawer-divider" />
-            <a className="nav-item nav-item-ext" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer">Real e-Filing portal ↗</a>
+            <button type="button" className="nav-item" onClick={() => go("practice")}>Practice portal</button>
           </div>
         </div>
       </nav>
@@ -326,14 +320,12 @@ export default function App() {
         {view === "mapping" && <MappingPage go={go} />}
         {view === "calc" && <CalculatorPage ay={years[0].ay} />}
         {view === "solutions" && <SolutionsPage />}
+        {view === "practice" && <PracticePortal onExit={() => go("home")} />}
       </div>
 
       <footer style={{ borderTop: `1px solid ${LINE}`, position: "relative", zIndex: 1 }}>
         <div className="footer-inner" style={{ ...wrap, paddingTop: 30, paddingBottom: 30 }}>
-          <div className="footer-links">
-            <span className="disp" style={{ fontWeight: 700, fontSize: 15 }}>Tax<span style={{ color: AMBER }}>Pilot</span></span>
-            {NAV.map(([v, label]) => (<button key={v} className="lnk" onClick={() => go(v)} style={{ fontSize: 13 }}>{label}</button>))}
-          </div>
+          <span className="disp" style={{ fontWeight: 700, fontSize: 15 }}>Tax<span style={{ color: AMBER }}>Pilot</span></span>
           <p className="footer-note">A learning companion for first-time filers, not tax advice. Figures reflect AY {years[0].ay}. Always verify against your own documents.</p>
         </div>
       </footer>
@@ -346,7 +338,7 @@ function Home({ years, yi, setYi, go }) {
   useReveal("home");
   return (
     <div style={{ position: "relative", zIndex: 1 }}>
-      <header style={{ ...wrap, paddingTop: "clamp(64px,11vw,120px)", paddingBottom: "clamp(48px,7vw,84px)" }}>
+      <header style={{ ...wrap, paddingTop: "clamp(64px,11vw,120px)", paddingBottom: "clamp(32px,5vw,48px)" }}>
         <div className="rise in" style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 30 }}>
           <div className="yearpick">
             <span style={{ ...eye, color: FAINT }}>Filing for</span>
@@ -364,24 +356,15 @@ function Home({ years, yi, setYi, go }) {
         <p style={{ color: MUTE, fontSize: "clamp(1.1rem,2vw,1.32rem)", lineHeight: 1.55, maxWidth: 552, marginTop: 28 }}>
           The portal asks for numbers it never explains. TaxPilot translates it, so you know which form is yours, which regime keeps more, and what to do when something breaks.
         </p>
-        <div style={{ display: "flex", gap: 14, marginTop: 38, flexWrap: "wrap" }}>
-          <button className="btn btn-p" onClick={() => go("finder")}>Find my form →</button>
-          <button className="btn btn-g" onClick={() => go("calc")}>Compare regimes</button>
-        </div>
-        <div style={{ display: "flex", gap: 48, marginTop: 62, flexWrap: "wrap" }}>
-          {[["4", "forms, decoded"], [SOLUTIONS.length + "", "problems, solved"], ["2 min", "to your answer"]].map(([a, b]) => (
-            <div key={b}><div className="disp" style={{ fontSize: 34, fontWeight: 600 }}>{a}</div><div style={{ color: FAINT, fontSize: 13.5, marginTop: 2 }}>{b}</div></div>
-          ))}
-        </div>
       </header>
 
-      {/* three doors */}
       <section style={{ ...wrap, paddingBottom: 40 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16 }}>
           {[
-            ["01", "Find your form", "Four forms, one belongs to you. Answer for how you earn and we point to the exact one, and what would rule it out.", "finder", "Open the finder"],
-            ["02", "Compare regimes", "Old versus new is worth real money. Slide your income, see the tax both ways, and watch the breakdown build slab by slab.", "calc", "Run the numbers"],
-            ["03", "Fix what broke", "Refund stuck? Notice arrived? Search the problems every filer hits, each with a fix written in plain words.", "solutions", "Browse solutions"],
+            ["01", "Find your form", "Four forms, one belongs to you. See who each fits, what rules it out, and which papers it needs.", "finder", "Open the finder"],
+            ["02", "Practice the portal", "A sandbox that looks like the real e-Filing site. Walk the ITR wizard with fake credentials and live totals.", "practice", "Enter the sandbox"],
+            ["03", "Compare regimes", "Old versus new is worth real money. Slide your income and see the tax both ways, slab by slab.", "calc", "Run the numbers"],
+            ["04", "Fix what broke", "Refund stuck? Notice arrived? Search the problems every filer hits, each with a fix in plain words.", "solutions", "Browse solutions"],
           ].map(([n, t, d, v, cta], i) => (
             <button key={t} type="button" onClick={() => go(v)} className="rise card hovr" style={{ textAlign: "left", cursor: "pointer", padding: 28, display: "flex", flexDirection: "column", gap: 12, transitionDelay: (i * 70) + "ms" }}>
               <span className="mono" style={{ fontSize: 13, color: AMBER }}>{n}</span>
@@ -393,17 +376,18 @@ function Home({ years, yi, setYi, go }) {
         </div>
       </section>
 
-      {/* honesty strip */}
       <section style={{ ...wrap, paddingTop: 60, paddingBottom: 90 }}>
-        <div className="rise card" style={{ padding: "clamp(28px,4vw,48px)", display: "flex", gap: 28, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="rise card" style={{ padding: "clamp(28px,4vw,48px)" }}>
           <div style={{ maxWidth: 560 }}>
             <div style={eye}>Why do this yourself</div>
             <h2 className="disp" style={{ fontSize: "clamp(1.6rem,3.2vw,2.3rem)", fontWeight: 600, marginTop: 12, lineHeight: 1.15 }}>Most salaried returns are simpler than they feel.</h2>
             <p style={{ color: MUTE, fontSize: 15.5, marginTop: 14, lineHeight: 1.6 }}>
               If your income is salary, interest and a bit of investing, you can file this yourself in one sitting. When it gets genuinely complex, business income, foreign assets, heavy capital gains, a CA earns their fee, and you will finally know what to ask them.
             </p>
+            <a className="portal-link" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer" style={{ marginTop: 20, display: "inline-flex" }}>
+              Open the e-Filing portal <span aria-hidden="true">↗</span>
+            </a>
           </div>
-          <a className="btn btn-p" href="https://eportal.incometax.gov.in" target="_blank" rel="noopener noreferrer">Open the e-Filing portal ↗</a>
         </div>
       </section>
     </div>
