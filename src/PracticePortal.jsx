@@ -201,7 +201,7 @@ export default function PracticePortal({ onExit }) {
   const shared = { coach, data, set, ay, setAy, mode, setMode, status, setStatus, form, setForm, go, sel, setSel, conf, setConf, setEdit, R };
 
   return (
-    <div style={{ background: authed ? BG : "#fbfcfe", minHeight: "100vh", color: INK, fontFamily: "'Open Sans',system-ui,sans-serif", overflowX: "hidden" }}>
+    <div className="sandbox-viewport" style={{ background: authed ? BG : "#fbfcfe" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
         *{box-sizing:border-box;margin:0}
@@ -244,9 +244,15 @@ export default function PracticePortal({ onExit }) {
         .chk.on{background:${NAVY};border-color:${NAVY};color:#fff;font-size:14px;font-weight:700}
         .codebox{width:52px;height:52px;border-radius:6px;background:${BLUE};color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;flex:none;text-align:center;line-height:1.1;padding:2px}
         .schedrow{display:flex;gap:16px;align-items:flex-start;padding:18px 8px;border-bottom:1px solid ${LINE};background:none;border-left:none;border-right:none;border-top:none;width:100%;text-align:left;cursor:pointer}
-        .steptri{display:flex;align-items:center;gap:0}
-        .stepbox{width:44px;height:44px;border:1px solid ${LINE};border-radius:6px;display:grid;place-items:center;font-size:20px;font-weight:700;background:#fff}
-        .stepline{flex:1;height:1px;background:${LINE};min-width:40px}
+        .steptri{display:flex;align-items:flex-start;gap:0}
+        .itr-steps{margin:28px 0;max-width:640px;width:100%}
+        .itr-step{display:flex;align-items:flex-start;flex:1;min-width:0}
+        .itr-step-col{display:flex;flex-direction:column;align-items:center;width:clamp(88px,26vw,130px);flex-shrink:0}
+        .itr-step-label{font-size:12.5px;color:${MUTE};text-align:center;margin-top:8px;line-height:1.35}
+        .itr-intro-grid>div:first-child{border-bottom:none !important}
+        .itr-intro-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
+        .stepbox{width:44px;height:44px;border:1px solid ${LINE};border-radius:6px;display:grid;place-items:center;font-size:20px;font-weight:700;background:#fff;flex-shrink:0}
+        .stepline{flex:1;height:1px;background:${LINE};min-width:24px;margin-top:22px}
         .ovl{position:fixed;inset:0;z-index:80;background:rgba(20,26,40,.5);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto;animation:cf .2s ease}
         .sheet{background:#fff;border-radius:12px;width:100%;max-width:640px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
         .pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
@@ -257,24 +263,55 @@ export default function PracticePortal({ onExit }) {
         .efmenu{position:absolute;top:100%;left:0;background:#fff;border:1px solid ${LINE};border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.18);min-width:260px;z-index:50;overflow:hidden}
         .efitem{display:block;width:100%;text-align:left;padding:13px 18px;font-size:14.5px;color:${INK};background:#fff;border:none;border-bottom:1px solid ${LINE};cursor:pointer}
         .efitem:last-child{border-bottom:none}.efitem:hover{background:${TINT}}
-        .page-main{padding:20px clamp(14px,4vw,22px) 90px}
-        .top-emblem{width:44px;height:44px}
+        .page-main{padding:20px clamp(14px,4vw,22px) 90px;width:100%;max-width:1200px;margin:0 auto;min-width:0}
+        .portal-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+        .portal-table-wrap table{min-width:520px}
+        .top-emblem{width:44px;height:44px;flex-shrink:0}
         .top-brand-title{font-size:22px;font-weight:700;color:${NAVY}}
         .top-brand-sub{font-size:11.5px;color:${NAVY}}
-        .exit-pilot{position:fixed;top:14px;left:14px;z-index:70;background:#0D0F14;color:#FFB84D;border:1px solid rgba(255,184,77,0.35);border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:0.04em;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+        .top-bar-inner{max-width:1200px;margin:0 auto;padding:10px clamp(14px,4vw,22px);display:flex;align-items:center;justify-content:space-between;gap:14px;min-width:0}
+        .top-bar-brand{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+        .top-bar-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+        .portal-nav-inner{max-width:1200px;margin:0 auto;padding:0 clamp(14px,4vw,22px);display:flex;align-items:center;gap:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap}
+        .navlink{white-space:nowrap;flex-shrink:0}
+        .grid2,.schedwrap,.grid3,.split2{min-width:0}
+        .login-h1{font-size:clamp(1.75rem,4.5vw,2.375rem) !important}
+        .page-h1{font-size:clamp(1.5rem,4vw,2rem) !important;line-height:1.2}
+        .summary-row{flex-wrap:wrap}
+        .summary-row .link{margin-left:auto}
+        .schedrow>span:last-child{min-width:0;flex:1}
+        .footer-inner{max-width:1200px;margin:0 auto;padding:22px clamp(14px,4vw,22px);text-align:center;color:${MUTE};font-size:13px;line-height:1.7}
+        .exit-pilot{position:fixed;bottom:14px;left:14px;z-index:70;background:#0D0F14;color:#FFB84D;border:1px solid rgba(255,184,77,0.35);border-radius:999px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:0.04em;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
         .navbtns{display:flex;justify-content:space-between;margin-top:30px;flex-wrap:wrap;gap:12px}
-        @media(max-width:860px){
-          .hide-sm{display:none !important}
-          .grid2,.schedwrap{grid-template-columns:1fr !important}
+        .sandbox-viewport{width:100%;min-height:100vh;overflow-x:clip;color:${INK};font-family:'Open Sans',system-ui,sans-serif}
+        @media(max-width:1024px){
+          .grid2,.schedwrap,.grid3,.split2{grid-template-columns:1fr !important}
           .grid2>div:first-child{border-right:none !important;border-bottom:1px solid ${LINE}}
-          .top-emblem{width:36px !important;height:36px !important;font-size:8px !important}
+          .split2 .vdiv{display:none !important}
+          .hide-md{display:none !important}
           .top-brand-title{font-size:17px !important}
           .top-brand-sub{font-size:10px !important}
+          .top-emblem{width:36px !important;height:36px !important;font-size:8px !important}
           .navlink{padding:14px 0;font-size:14px}
-          .steptri{overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;max-width:100%}
-          .stepline{min-width:20px}
-          .sandbox{bottom:auto;top:10px;right:10px;left:auto;font-size:9px;padding:5px 10px;max-width:calc(100% - 120px);text-align:center}
-          .exit-pilot{top:auto;bottom:14px;left:14px;font-size:11px;padding:7px 12px}
+          .page-main{padding-bottom:72px}
+          .summary-row .link{width:100%;margin-left:0;margin-top:8px;text-align:left}
+          .itr-steps{max-width:100%}
+          .steptri.itr-steps{flex-direction:column;gap:0}
+          .itr-step{flex:none;width:100%;padding:14px 0;border-bottom:1px solid ${LINE};gap:0}
+          .itr-step:last-child{border-bottom:none}
+          .itr-step-col{flex-direction:row;width:100%;align-items:flex-start;gap:14px}
+          .itr-step-label{text-align:left;margin-top:10px;flex:1;font-size:14px}
+          .itr-step .stepline{display:none}
+        }
+        @media(max-width:860px){
+          .hide-sm{display:none !important}
+          .top-bar-inner{flex-wrap:wrap}
+          .top-bar-actions{width:100%;justify-content:flex-start}
+          .top-user-meta{display:none !important}
+          .itr-intro-actions{flex-direction:column-reverse;margin-top:20px}
+          .itr-intro-actions .btn{width:100%;justify-content:center}
+          .sandbox{bottom:14px;top:auto;left:auto;right:14px;font-size:9px;padding:6px 12px;max-width:calc(100% - 130px);text-align:center}
+          .exit-pilot{bottom:14px;top:auto;left:14px;font-size:11px;padding:7px 12px}
           .ovl{padding:0;align-items:flex-end}
           .sheet{border-radius:12px 12px 0 0;max-height:92vh;overflow:auto}
           .schedrow{padding:14px 4px;gap:12px}
@@ -334,25 +371,25 @@ function TopBar({ authed, data, coach, setCoach, view, go }) {
   return (
     <>
       <div style={{ background: "#fff", borderBottom: `1px solid ${LINE}` }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "10px clamp(14px,4vw,22px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-          <button className="link" onClick={() => go(authed ? "dashboard" : "login1")} style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
-            <span className="top-emblem" style={{ borderRadius: "50%", border: `2px solid ${RED}`, display: "grid", placeItems: "center", fontSize: 9, fontWeight: 800, color: RED, textAlign: "center", lineHeight: 1, flexShrink: 0 }}>ITD</span>
+        <div className="top-bar-inner">
+          <button className="link top-bar-brand" onClick={() => go(authed ? "dashboard" : "login1")}>
+            <span className="top-emblem" style={{ borderRadius: "50%", border: `2px solid ${RED}`, display: "grid", placeItems: "center", fontSize: 9, fontWeight: 800, color: RED, textAlign: "center", lineHeight: 1 }}>ITD</span>
             <span style={{ textAlign: "left", minWidth: 0 }}>
               <span className="top-brand-title">e-Filing <span style={{ color: RED, fontStyle: "italic", fontSize: 13 }}>Anywhere Anytime</span></span>
               <span className="top-brand-sub" style={{ display: "block", borderTop: `1px solid ${GREEN}`, paddingTop: 2 }}>Income Tax Department, Government of India</span>
             </span>
           </button>
-          <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 14, color: INK, flexWrap: "wrap" }}>
-            <span className="hide-sm">{"\u260E"} Call Us {"\u25BE"}</span>
-            <span className="hide-sm">{"\uD83C\uDF10"} English {"\u25BE"}</span>
-            <span className="hide-sm" style={{ color: FAINT }}>A- A A+</span>
+          <div className="top-bar-actions">
+            <span className="hide-md">{"\u260E"} Call Us {"\u25BE"}</span>
+            <span className="hide-md">{"\uD83C\uDF10"} English {"\u25BE"}</span>
+            <span className="hide-md" style={{ color: FAINT }}>A- A A+</span>
             <label style={{ display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer", background: TINT, border: `1px solid ${LINE}`, padding: "6px 12px", borderRadius: 999, color: NAVY, fontWeight: 600 }}>
               <input type="checkbox" checked={coach} onChange={(e) => setCoach(e.target.checked)} style={{ accentColor: NAVY, width: 15, height: 15 }} /> Guidance
             </label>
             {authed ? (
-              <span style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                <span style={{ width: 34, height: 34, borderRadius: 4, background: "#dde3ee", display: "grid", placeItems: "center", color: MUTE, fontSize: 16 }}>{"\uD83D\uDC64"}</span>
-                <span style={{ textAlign: "left", lineHeight: 1.1 }}><b style={{ fontSize: 14 }}>{data.name} {"\u25BE"}</b><span style={{ display: "block", fontSize: 12, color: MUTE }}>Individual</span></span>
+              <span style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+                <span style={{ width: 34, height: 34, borderRadius: 4, background: "#dde3ee", display: "grid", placeItems: "center", color: MUTE, fontSize: 16, flexShrink: 0 }}>{"\uD83D\uDC64"}</span>
+                <span className="top-user-meta" style={{ textAlign: "left", lineHeight: 1.1, minWidth: 0 }}><b style={{ fontSize: 14 }}>{data.name} {"\u25BE"}</b><span style={{ display: "block", fontSize: 12, color: MUTE }}>Individual</span></span>
               </span>
             ) : (
               <span style={{ fontSize: 14 }}>Do not have an account? <span style={{ color: LINK, fontWeight: 700 }}>Register</span></span>
@@ -363,7 +400,7 @@ function TopBar({ authed, data, coach, setCoach, view, go }) {
 
       {authed && (
         <nav style={{ background: NAVY, position: "sticky", top: 0, zIndex: 40 }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 clamp(14px,4vw,22px)", display: "flex", alignItems: "center", gap: 26, flexWrap: "wrap", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <div className="portal-nav-inner">
             <button className={"navlink" + (view === "dashboard" ? " on" : "")} onClick={() => go("dashboard")}>Dashboard</button>
             <EfileMenu view={view} inWizard={inWizard} go={go} />
             <button className="navlink hide-sm">Authorised Partners {"\u25BE"}</button>
@@ -372,7 +409,7 @@ function TopBar({ authed, data, coach, setCoach, view, go }) {
             <button className="navlink hide-sm">Pending Actions {"\u25BE"}</button>
             <button className="navlink hide-sm">Grievances {"\u25BE"}</button>
             <button className="navlink hide-sm">Help</button>
-            <span className="hide-sm" style={{ marginLeft: "auto", color: "#fff", fontSize: 13, display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+            <span className="hide-md" style={{ marginLeft: "auto", color: "#fff", fontSize: 13, display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
               Session Time <span className="sesbox"><b>1</b><b>4</b>:<b>5</b><b>9</b></span>
             </span>
           </div>
@@ -415,11 +452,11 @@ function Mandatory() {
 function Login1({ data, go, coach }) {
   const [uid, setUid] = useState("");
   return (
-    <main className="page-main" style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <main className="page-main">
       <Mandatory />
       <div className="card grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, padding: 0, overflow: "hidden" }}>
         <div style={{ padding: "clamp(28px,4vw,52px)", borderRight: `1px solid ${LINE}` }}>
-          <h1 style={{ fontSize: 38, fontWeight: 700, color: "#4a4a4a", marginBottom: 30 }}>Login</h1>
+          <h1 className="login-h1" style={{ fontWeight: 700, color: "#4a4a4a", marginBottom: 30 }}>Login</h1>
           <Coach show={coach} title="Practice login">No real credentials needed. The User ID is pre-filled with the practice PAN, <strong>{data.pan}</strong>. Just click Continue.</Coach>
           <label className="lbl req">Enter your User ID</label>
           <input className="fld" value={uid} onChange={(e) => setUid(e.target.value)} placeholder="PAN/ AADHAAR/ OTHER USER ID" />
@@ -450,13 +487,13 @@ function Login2({ data, go, coach }) {
   const [show, setShow] = useState(false);
   const ready = ok && pw.length > 0;
   return (
-    <main className="page-main" style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <main className="page-main">
       <Mandatory />
       <div className="card grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0, padding: 0, overflow: "hidden" }}>
         <div style={{ padding: "clamp(28px,4vw,52px)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
-            <span style={{ width: 78, height: 78, borderRadius: 6, background: "#dde3ee", display: "grid", placeItems: "center", color: MUTE, fontSize: 34 }}>{"\uD83D\uDC64"}</span>
-            <div><h1 style={{ fontSize: 34, fontWeight: 700, color: "#4a4a4a" }}>Login</h1><div style={{ marginTop: 6, fontSize: 15 }}>PAN : <b>{data.pan}</b></div></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8, flexWrap: "wrap" }}>
+            <span style={{ width: 78, height: 78, borderRadius: 6, background: "#dde3ee", display: "grid", placeItems: "center", color: MUTE, fontSize: 34, flexShrink: 0 }}>{"\uD83D\uDC64"}</span>
+            <div><h1 className="login-h1" style={{ fontWeight: 700, color: "#4a4a4a" }}>Login</h1><div style={{ marginTop: 6, fontSize: 15 }}>PAN : <b>{data.pan}</b></div></div>
           </div>
           <Coach show={coach} title="Secure Access Message">The real portal shows a personal phrase you set, so you know the page is genuine. Tick the box, type any password, and Continue. Nothing is checked here.</Coach>
           <p style={{ fontSize: 15, margin: "18px 0 8px" }}>Secure Access Message</p>
@@ -486,7 +523,7 @@ function Login2({ data, go, coach }) {
 // ── Dashboard ────────────────────────────────────────────────
 function Dashboard({ data, go, coach }) {
   return (
-    <main className="page-main" style={{ maxWidth: 1200, margin: "0 auto" }}>
+    <main className="page-main">
       <Crumbs items={["Dashboard"]} />
       <Coach show={coach} title="You are on the dashboard">This mirrors the real e-Filing home. To file a return, open <strong>e-File</strong> in the blue bar, or use the shortcut button below.</Coach>
       <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 22, alignItems: "start" }} className="grid2">
@@ -518,7 +555,7 @@ function Dashboard({ data, go, coach }) {
           <div className="card" style={{ padding: 24 }}>
             <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 6 }}>Your tax records</h3>
             <p style={{ color: MUTE, fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>Cross-check what the department already has on file before you file. These are pre-filled from the same sandbox data.</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }} className="grid2">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }} className="grid3">
               {[["View Form 26AS", "form26as", "\uD83D\uDCC4", "TDS, taxes paid & refunds"],
                 ["View AIS", "ais", "\uD83D\uDCCA", "Annual Information Statement"],
                 ["e-Pay Tax", "epay", "\uD83D\uDCB3", "Pay & track challans"]].map(([t, v, ic, d]) => (
@@ -536,8 +573,9 @@ function Dashboard({ data, go, coach }) {
   );
 }
 
-function Page({ children, maxWidth = 1200 }) {
-  return <main className="page-main" style={{ maxWidth, margin: "0 auto" }}>{children}</main>;
+function Page({ children, maxWidth }) {
+  const style = maxWidth ? { maxWidth } : undefined;
+  return <main className="page-main" style={style}>{children}</main>;
 }
 function NavBtns({ onBack, onNext, nextLabel = "Continue", disabled }) {
   return (
@@ -553,7 +591,7 @@ function ItrYear({ ay, setAy, mode, setMode, go, coach }) {
   return (
     <Page>
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "File Income Tax Return"]} />
-      <h1 style={{ fontSize: 34, fontWeight: 700, marginBottom: 6 }}>Income Tax Return (ITR)</h1>
+      <h1 className="page-h1" style={{ fontWeight: 700, marginBottom: 6 }}>Income Tax Return (ITR)</h1>
       <Mandatory />
       <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 22, alignItems: "start" }} className="grid2">
         <div className="card" style={{ padding: 30 }}>
@@ -589,7 +627,7 @@ function ItrStatus({ status, setStatus, go, coach }) {
   return (
     <Page>
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "Select Status"]} />
-      <h1 style={{ fontSize: 32, fontWeight: 700, lineHeight: 1.2, maxWidth: 760 }}>Please select the status applicable to you to proceed further</h1>
+      <h1 className="page-h1" style={{ fontWeight: 700, lineHeight: 1.2, maxWidth: 760 }}>Please select the status applicable to you to proceed further</h1>
       <p style={{ color: MUTE, fontSize: 15, marginTop: 14, lineHeight: 1.6 }}>Based on last year's data we have pre-selected a status. You may change it if it is not correct.</p>
       <Coach show={coach} title="Choose your status">Most salaried taxpayers are an <strong>Individual</strong>. Keep Individual and Proceed.</Coach>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 18, marginTop: 26, maxWidth: 900 }}>
@@ -610,14 +648,14 @@ function ItrForm({ form, setForm, go, coach }) {
     <Page>
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "Select Status", "Select ITR Form"]} />
       <div style={{ color: MUTE, fontSize: 16 }}>Income Tax Returns</div>
-      <h1 style={{ fontSize: 32, fontWeight: 700, margin: "6px 0 26px" }}>You need to choose an ITR Form to proceed</h1>
+      <h1 className="page-h1" style={{ fontWeight: 700, margin: "6px 0 26px" }}>You need to choose an ITR Form to proceed</h1>
       <Coach show={coach} title="Which form?">Salaried with simple income? Choose <strong>ITR-1</strong>. Have capital gains or foreign assets? Pick <strong>ITR-2</strong>. Select a form and Proceed.</Coach>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1px 1fr", gap: 30, maxWidth: 960 }} className="grid2">
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1px 1fr", gap: 30, maxWidth: 960 }} className="grid2 split2">
         <div>
           <p style={{ fontSize: 16, marginBottom: 18 }}>Help me decide which ITR Form to file</p>
           <button className="btn btn-p" onClick={() => go("itr_form")}>Proceed {"\u203A"}</button>
         </div>
-        <div style={{ background: LINE }} className="hide-sm" />
+        <div style={{ background: LINE }} className="hide-sm vdiv" />
         <div>
           <p style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>I know which ITR Form I need to file</p>
           <select className="fld" value={form} onChange={(e) => setForm(e.target.value)}>
@@ -647,29 +685,29 @@ function ItrIntro({ form, go, coach }) {
   return (
     <Page>
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "Select Status", "Select ITR Form", "ITR"]} />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 30, alignItems: "start" }} className="grid2">
-        <div>
-          <h1 style={{ fontSize: 34, fontWeight: 700 }}>{m.title}</h1>
-          <p style={{ color: MUTE, fontSize: 15.5, marginTop: 8, lineHeight: 1.6, maxWidth: 620 }}>{m.sub}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: "clamp(20px,4vw,30px)", alignItems: "start" }} className="grid2 itr-intro-grid">
+        <div style={{ minWidth: 0 }}>
+          <h1 className="page-h1" style={{ fontWeight: 700 }}>{m.title}</h1>
+          <p style={{ color: MUTE, fontSize: "clamp(14px,2.5vw,15.5px)", marginTop: 8, lineHeight: 1.6 }}>{m.sub}</p>
           <Coach show={coach} title="Three stages ahead">You will (1) check your pre-filled breakup, (2) confirm the return summary, and (3) verify and submit. Click Let's Get Started.</Coach>
-          <div className="steptri" style={{ margin: "30px 0", maxWidth: 560 }}>
+          <div className="steptri itr-steps" role="list" aria-label="Filing steps">
             {steps.map((s, i) => (
-              <span key={i} style={{ display: "flex", alignItems: "flex-start", flex: i < 2 ? 1 : "none" }}>
-                <span style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 130 }}>
-                  <span className="stepbox">{i + 1}</span>
-                  <span style={{ fontSize: 12.5, color: MUTE, textAlign: "center", marginTop: 8, lineHeight: 1.35 }}>{s}</span>
-                </span>
-                {i < 2 && <span className="stepline" style={{ marginTop: 22 }} />}
-              </span>
+              <div key={i} className="itr-step" role="listitem">
+                <div className="itr-step-col">
+                  <span className="stepbox" aria-hidden="true">{i + 1}</span>
+                  <span className="itr-step-label">{s}</span>
+                </div>
+                {i < 2 && <span className="stepline" aria-hidden="true" />}
+              </div>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 14 }}>
+          <div className="itr-intro-actions">
             <button className="btn btn-o" onClick={() => go("itr_form")}>{"\u2039"} Back</button>
             <button className="btn btn-p" onClick={() => go("itr_reasons")}>Let's Get Started {"\u203A"}</button>
           </div>
         </div>
-        <div className="hide-sm" style={{ display: "grid", placeItems: "center" }}>
-          <div style={{ width: 200, height: 210, borderRadius: 16, background: TINT, display: "grid", placeItems: "center", fontSize: 76 }}>{"\uD83D\uDCCB"}</div>
+        <div className="hide-sm" style={{ display: "grid", placeItems: "center", paddingTop: 8 }}>
+          <div style={{ width: "min(200px,100%)", aspectRatio: "10/11", borderRadius: 16, background: TINT, display: "grid", placeItems: "center", fontSize: "clamp(48px,12vw,76px)" }}>{"\uD83D\uDCCB"}</div>
         </div>
       </div>
     </Page>
@@ -682,7 +720,7 @@ function ItrReasons({ go, coach }) {
   return (
     <Page maxWidth={1100}>
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "Select Status", "Select ITR Form", "ITR"]} />
-      <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 22 }}>Please answer the following questions to proceed further</h1>
+      <h1 className="page-h1" style={{ fontWeight: 700, marginBottom: 22 }}>Please answer the following questions to proceed further</h1>
       <Coach show={coach} title="Why are you filing?">If your income crosses the basic exemption limit (the usual case), keep the <strong>first option</strong>. Then Continue.</Coach>
       <div className="card" style={{ padding: 28 }}>
         <p style={{ fontWeight: 700, fontSize: 16, marginBottom: 18 }}>Are you filing the income tax return for any of the following reasons?</p>
@@ -713,7 +751,7 @@ function SelectSchedule({ go, coach, sel, setSel }) {
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "Select Status", "Select ITR Form", "ITR", "Select Schedule"]} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
         <div>
-          <h1 style={{ fontSize: 32, fontWeight: 700 }}>Select Schedule</h1>
+          <h1 className="page-h1" style={{ fontWeight: 700 }}>Select Schedule</h1>
           <p style={{ color: MUTE, fontSize: 15, marginTop: 6 }}>Select the schedules which are applicable to you <span style={{ color: FAINT }}>(mandatory schedules are pre-selected, but you can change any of them)</span></p>
         </div>
         <input className="fld" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search Schedule" style={{ maxWidth: 320 }} />
@@ -770,7 +808,7 @@ function ReturnSummary({ go, coach, sel, conf, setEdit, R }) {
     <Page>
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "Select Status", "Select ITR Form", "ITR", "Select Schedule", "Return Summary"]} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 12 }}>
-        <h1 style={{ fontSize: 32, fontWeight: 700 }}>Return Summary</h1>
+        <h1 className="page-h1" style={{ fontWeight: 700 }}>Return Summary</h1>
         <span style={{ fontSize: 14.5, color: MUTE }}><b style={{ color: INK }}>{confirmedCount}</b> of {rows.length} confirmed</span>
       </div>
       <Coach show={coach} title="Confirm each schedule">Open each row with <strong>Provide your confirmation</strong>. You will see the pre-filled numbers, edit any of them, and the tax at the end updates live. Confirmed rows turn green. Then Proceed to Verification.</Coach>
@@ -785,7 +823,7 @@ function ReturnSummary({ go, coach, sel, conf, setEdit, R }) {
         {rows.map((x, i) => {
           const done = conf[x.code];
           return (
-            <div key={x.code} style={{ display: "flex", alignItems: "center", gap: 18, padding: "18px 22px", borderBottom: i < rows.length - 1 ? `1px solid ${LINE}` : "none", background: done ? "#f4fbf6" : "#fff" }}>
+            <div key={x.code} className="summary-row" style={{ display: "flex", alignItems: "center", gap: 18, padding: "18px 22px", borderBottom: i < rows.length - 1 ? `1px solid ${LINE}` : "none", background: done ? "#f4fbf6" : "#fff" }}>
               <span className="codebox" style={{ background: done ? GREEN : BLUE }}>{done ? "\u2713" : x.code}</span>
               <span style={{ flex: 1 }}>
                 <span style={{ fontWeight: 700, fontSize: 16 }}>{x.name}{x.mand && <span style={{ fontWeight: 400, color: MUTE }}> (Mandatory)</span>}</span>
@@ -926,7 +964,7 @@ function Verify({ data, go, coach, R }) {
   return (
     <Page maxWidth={860}>
       <Crumbs items={["Dashboard", "e-file", "Income Tax Return", "ITR", "Return Summary", "Verification"]} />
-      <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 8 }}>Verify & Submit your Return</h1>
+      <h1 className="page-h1" style={{ fontWeight: 700, marginBottom: 8 }}>Verify & Submit your Return</h1>
       <Coach show={coach} title="The bottom line">Green means a refund, red means tax still payable. Anything you edited in the schedules is reflected here. Tick the declaration and Submit.</Coach>
       <div className="card" style={{ padding: 26 }}>
         {[["Name / PAN", data.name + " \u00B7 " + data.pan], ["Assessment year", "AY 2026-27 \u00B7 New regime"], ["Income from Salary", inr(R.salary)], ["Income from House Property", inr(R.hp)], ["Income from Other Sources", inr(R.os)], ["Capital Gains", inr(R.stcgOther + R.stcg111A + R.ltcg112A)], ["Gross total income", inr(R.gti)], ["Total tax liability", inr(R.total)], ["Total tax paid", inr(R.paid)]].map(([a, b]) => (
@@ -998,8 +1036,8 @@ function EfileMenu({ view, inWizard, go }) {
 // ── Shared record-screen helpers ─────────────────────────────
 function RecordTable({ head, rows }) {
   return (
-    <div style={{ overflowX: "auto", border: `1px solid ${LINE}`, borderRadius: 8 }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 560 }}>
+    <div className="portal-table-wrap" style={{ border: `1px solid ${LINE}`, borderRadius: 8 }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
         <thead><tr style={{ background: TINT }}>
           {head.map((h, i) => (
             <th key={i} style={{ textAlign: typeof h === "object" ? h.a : "left", padding: "12px 14px", fontWeight: 700, color: INK, borderBottom: `1px solid ${LINE}`, whiteSpace: "nowrap" }}>
@@ -1032,7 +1070,7 @@ function Form26AS({ data, go, coach, R }) {
     <Page>
       <Crumbs items={[<a key="d" onClick={() => go("dashboard")}>Dashboard</a>, "Form 26AS"]} />
       <Coach show={coach} title="This is your Form 26AS (Annual Tax Statement)">Form 26AS shows every rupee of tax credited against your PAN, TDS deducted for you, and any tax you paid yourself. The totals here feed the <strong>Tax Paid</strong> schedule of your return.</Coach>
-      <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 4 }}>Form 26AS</h1>
+      <h1 className="page-h1" style={{ fontWeight: 800, marginBottom: 4 }}>Form 26AS</h1>
       <p style={{ color: MUTE, fontSize: 14, marginBottom: 20 }}>Annual Tax Statement under Section 203AA {"\u00B7"} PAN {data.pan} {"\u00B7"} AY 2026-27</p>
 
       <div className="card" style={{ padding: 22, marginBottom: 20 }}>
@@ -1221,7 +1259,7 @@ function EpayTax({ data, set, go, coach, R }) {
 function Footer({ authed }) {
   return (
     <footer style={{ background: authed ? "#eceff5" : "#fff", borderTop: `1px solid ${LINE}`, position: "relative", zIndex: 1 }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "22px clamp(14px,4vw,22px)", textAlign: "center", color: MUTE, fontSize: 13, lineHeight: 1.7 }}>
+      <div className="footer-inner">
         <div style={{ marginBottom: 6 }}><span className="link">Feedback</span> | <span className="link">Website Policies</span> | <span className="link">Accessibility Statement</span> | <span className="link">Site Map</span> | <span className="link">Browser Support</span></div>
         This is a <b>practice sandbox</b> for learning, not the real portal. Nothing is submitted to the Income Tax Department.
         <div style={{ marginTop: 4 }}>Best viewed in 1024 x 768 with the latest Chrome, Firefox, Safari or Edge.</div>

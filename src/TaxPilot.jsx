@@ -3,7 +3,7 @@
 //  Neutral slate UI. Deep near-black base. Amber accent.
 // ─────────────────────────────────────────────────────────────
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import PracticePortal from "./PracticePortal.jsx";
 
 const BG      = "#090A0E";
@@ -157,6 +157,24 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const years = useMemo(() => filingYears(new Date()), []);
   const [yi, setYi] = useState(0);
+  const navRef = useRef(null);
+  const [navH, setNavH] = useState(64);
+
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const measure = () => setNavH(el.offsetHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => { ro.disconnect(); window.removeEventListener("resize", measure); };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
 
   const go = (v) => { setView(v); setMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
@@ -171,7 +189,7 @@ export default function App() {
         *{box-sizing:border-box;margin:0}
         .app-root{--text-primary:rgba(255,255,255,0.92)}
         button{color:inherit;font-family:inherit}
-        html{scroll-behavior:smooth;scroll-padding-top:70px;background:${BG};overflow-x:clip}
+        html{scroll-behavior:smooth;scroll-padding-top:var(--nav-h,64px);background:${BG};overflow-x:clip}
         body{background:${BG};overflow-x:clip;min-height:100vh}
         ::selection{background:${AMBER};color:${INK}}
         .disp{font-family:'Space Grotesk',sans-serif}
@@ -183,7 +201,7 @@ export default function App() {
         .glow{position:fixed;top:-25%;right:-12%;width:62vw;height:62vw;max-width:760px;max-height:760px;border-radius:50%;
           background:radial-gradient(circle,rgba(255,184,77,0.07),transparent 64%);filter:blur(36px);pointer-events:none;animation:drift 22s ease-in-out infinite;z-index:0}
         @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-6%,5%)}}
-        .lnk{color:${MUTE};text-decoration:none;font-size:14.5px;transition:color .2s;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+        .lnk{color:${MUTE};text-decoration:none;font-size:14.5px;transition:color .2s;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;white-space:nowrap}
         .lnk:hover{color:${TEXT}}.lnk.on{color:${TEXT}}
         .btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;border-radius:999px;padding:14px 26px;cursor:pointer;border:1px solid transparent;transition:transform .18s ease,background .2s,border-color .2s;display:inline-flex;align-items:center;gap:9px;text-decoration:none}
         .btn:hover{transform:translateY(-2px)}
@@ -199,13 +217,16 @@ export default function App() {
         .nav-sep{width:1px;height:22px;background:${LINE};flex:none}
         .nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;border:1px solid ${LINE};background:transparent;color:${TEXT};cursor:pointer;flex:none}
         .nav-toggle svg{width:20px;height:20px}
-        .nav-drawer{display:none;border-top:1px solid ${LINE};background:rgba(9,10,14,0.99);backdrop-filter:blur(14px);padding:12px 0 18px}
-        .nav-drawer.open{display:block}
-        .nav-drawer-grid{display:grid;gap:6px}
-        .nav-drawer a,.nav-drawer button.nav-item{width:100%;text-align:left;padding:14px 16px;border-radius:12px;border:1px solid transparent;background:transparent;color:${MUTE};font-size:15px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between}
-        .nav-drawer button.nav-item.on{background:rgba(255,184,77,0.1);border-color:rgba(255,184,77,0.25);color:${TEXT}}
-        .nav-drawer a.nav-item-ext{color:${FAINT};font-size:14px}
-        .nav-drawer-divider{height:1px;background:${LINE};margin:8px 0}
+        .nav-cta-group{display:flex;align-items:center;gap:12px}
+        .site-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06)}
+        .page-shell{position:relative;z-index:1}
+        .mobile-menu-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.55)}
+        .mobile-menu{position:fixed;inset:0;z-index:201;background:#0d0d0d;padding:72px 20px 28px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+        .mobile-menu-close{align-self:flex-end;background:transparent;border:1px solid ${LINE};color:${TEXT};width:42px;height:42px;border-radius:12px;cursor:pointer;font-size:22px;line-height:1;margin-bottom:12px;flex:none}
+        .mobile-menu-item{display:block;width:100%;text-align:left;padding:16px 24px;border-radius:8px;border:1px solid transparent;background:transparent;color:${MUTE};font-size:16px;cursor:pointer;font-family:inherit;border-bottom:1px solid rgba(255,255,255,0.06)}
+        .mobile-menu-item:last-child{border-bottom:none}
+        .mobile-menu-item.on{background:transparent;border-color:rgba(245,166,35,0.3);color:${TEXT}}
+        .hero-section{padding-top:clamp(48px,5vw,72px) !important}
         .sandbox-long{display:inline}
         .sandbox-short{display:none}
         .card-title{color:var(--text-primary);font-weight:700}
@@ -220,7 +241,7 @@ export default function App() {
         .card{background:${CARD};border:1px solid ${LINE};border-radius:20px;transition:border-color .25s,transform .25s,box-shadow .25s;box-shadow:0 8px 28px rgba(0,0,0,0.38)}
         .hovr:hover{border-color:rgba(255,184,77,0.26);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.42)}
         .dot{width:5px;height:5px;border-radius:50%;flex:none;margin-top:8px}
-        .yearpick{display:inline-flex;align-items:center;gap:10px;background:${CARD};border:1px solid ${LINE};border-radius:999px;padding:7px 8px 7px 16px}
+        .yearpick{display:inline-flex;align-items:center;gap:10px;background:${CARD};border:1px solid ${LINE};border-radius:999px;padding:7px 8px 7px 16px;width:fit-content;max-width:100%}
         .yearpick select,.fld{appearance:none;-webkit-appearance:none;background:transparent;border:none;color:${TEXT};font-family:'JetBrains Mono',monospace;cursor:pointer}
         .yearpick select{font-size:13px;font-weight:500;padding:5px 30px 5px 10px;border-radius:999px;background-image:linear-gradient(45deg,transparent 50%,${AMBER} 50%),linear-gradient(135deg,${AMBER} 50%,transparent 50%);background-position:calc(100% - 15px) center,calc(100% - 10px) center;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
         .yearpick select option,.fld option{background:${CARD};color:${TEXT}}
@@ -247,19 +268,17 @@ export default function App() {
         .page.on{background:${AMBER};color:${INK};border-color:${AMBER}}
         .page:disabled{opacity:.35;cursor:not-allowed}
         .bar{height:100%;background:${AMBER};border-radius:4px;transition:width .5s cubic-bezier(.22,1,.36,1)}
-        .site-nav{position:sticky;top:0;z-index:100;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06)}
-        .hero-section{padding-top:clamp(48px,5vw,72px) !important}
-        @media(max-width:760px){
+        @media(max-width:768px){
           .hide-sm{display:none !important}
-          .nav-links{display:none}
+          .nav-links{display:none !important}
+          .nav-cta-group{display:none !important}
           .portal-link{display:none}
-          .nav-toggle{display:inline-flex}
-          .nav-bar{min-height:58px;height:auto;padding-top:10px;padding-bottom:10px;gap:10px;flex-wrap:wrap}
-          .nav-actions{margin-left:auto}
-          .btn-sandbox{padding:10px 14px;font-size:13px}
-          .sandbox-long{display:none}
-          .sandbox-short{display:inline}
-          .hero-h{font-size:15vw !important}
+          .nav-toggle{display:inline-flex !important}
+          .nav-bar{flex-wrap:nowrap !important;height:58px !important;min-height:58px !important;padding-top:0 !important;padding-bottom:0 !important}
+          .nav-actions{margin-left:auto;flex-shrink:0}
+          .hero-section{padding-top:40px !important;padding-inline:20px !important}
+          .hero-h{font-size:clamp(2rem,10vw,3.5rem) !important;line-height:1.1 !important}
+          .yearpick{max-width:90%}
           .two{grid-template-columns:1fr !important}
           .two>div:first-child{border-right:none !important;border-bottom:1px solid ${LINE}}
           .verdict-grid{grid-template-columns:1fr}
@@ -273,29 +292,27 @@ export default function App() {
         }
         @media(max-width:420px){
           .btn{font-size:14px;padding:12px 20px}
-          .disp.hero-h{font-size:14vw !important}
           .yearpick{flex-wrap:wrap;gap:8px;padding:10px 12px}
-        }}
+        }
         @media(prefers-reduced-motion:reduce){.rise{transition:none;opacity:1;transform:none}.glow{animation:none}.viewfade{animation:none}}
       `}</style>
 
-      <div className="glow" />
-
-      <nav className="site-nav">
-        <div className="nav-bar" style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", height: 66 }}>
+      <nav ref={navRef} className="site-nav" style={{ "--nav-h": navH + "px" }}>
+        <div className="nav-bar" style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", height: 66, gap: 16 }}>
           <button className="lnk disp" onClick={() => go("home")} style={{ fontWeight: 700, fontSize: 19, color: TEXT, display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
             <span style={{ width: 26, height: 26, borderRadius: 8, background: AMBER, color: INK, display: "grid", placeItems: "center", fontSize: 14, transform: "rotate(-8deg)" }}>✈</span>
             Tax<span style={{ color: AMBER }}>Pilot</span>
           </button>
-          <div className="nav-links" style={{ display: "flex", gap: 28 }}>
+          <div className="nav-links hide-sm" style={{ display: "flex", gap: 28, flexShrink: 0 }}>
             {TOOLS.map(([v, label]) => (<button key={v} className={"lnk" + (view === v ? " on" : "")} onClick={() => go(v)}>{label}</button>))}
           </div>
           <div className="nav-actions">
-            <button type="button" className="btn btn-sandbox" onClick={() => go("practice")}>
-              <span className="sandbox-tag">Sandbox</span>
-              <span className="sandbox-long">Practice portal</span>
-              <span className="sandbox-short">Portal</span>
-            </button>
+            <div className="nav-cta-group hide-sm">
+              <button type="button" className="btn btn-sandbox" onClick={() => go("practice")}>
+                <span className="sandbox-tag">Sandbox</span>
+                Practice portal
+              </button>
+            </div>
             <button type="button" className="nav-toggle" onClick={() => setMenuOpen((o) => !o)} aria-expanded={menuOpen} aria-label={menuOpen ? "Close menu" : "Open menu"}>
               {menuOpen ? (
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
@@ -305,16 +322,23 @@ export default function App() {
             </button>
           </div>
         </div>
-        <div className={"nav-drawer" + (menuOpen ? " open" : "")} style={wrap}>
-          <div className="nav-drawer-grid">
-            <button type="button" className={"nav-item" + (view === "home" ? " on" : "")} onClick={() => go("home")}>Home</button>
-            {TOOLS.map(([v, label]) => (
-              <button key={v} type="button" className={"nav-item" + (view === v ? " on" : "")} onClick={() => go(v)}>{label}</button>
-            ))}
-            <button type="button" className="nav-item" onClick={() => go("practice")}>Practice portal</button>
-          </div>
-        </div>
       </nav>
+
+      {menuOpen && (
+        <div className="mobile-menu-overlay" onClick={() => setMenuOpen(false)} aria-hidden="true">
+          <nav className="mobile-menu" aria-label="Mobile navigation" onClick={(e) => e.stopPropagation()}>
+            <button type="button" className="mobile-menu-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">×</button>
+            <button type="button" className={"mobile-menu-item" + (view === "home" ? " on" : "")} onClick={() => go("home")}>Home</button>
+            {TOOLS.map(([v, label]) => (
+              <button key={v} type="button" className={"mobile-menu-item" + (view === v ? " on" : "")} onClick={() => go(v)}>{label}</button>
+            ))}
+            <button type="button" className="mobile-menu-item" onClick={() => go("practice")}>Practice portal</button>
+          </nav>
+        </div>
+      )}
+
+      <div className="page-shell" style={{ paddingTop: navH }}>
+      <div className="glow" />
 
       <div className="viewfade" key={view}>
         {view === "home" && <Home years={years} yi={yi} setYi={setYi} go={go} />}
@@ -331,6 +355,7 @@ export default function App() {
           <p className="footer-note">A learning companion for first-time filers, not tax advice. Figures reflect AY {years[0].ay}. Always verify against your own documents.</p>
         </div>
       </footer>
+      </div>
     </div>
   );
 }
