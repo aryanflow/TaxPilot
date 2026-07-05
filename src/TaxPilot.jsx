@@ -1,19 +1,19 @@
 // ─────────────────────────────────────────────────────────────
 //  TAXPILOT. "Your co-pilot for filing ITR."
-//  Neutral slate UI — between OLED black and warm paper. Amber accent.
+//  Neutral slate UI — deep near-black base. Amber accent.
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useMemo } from "react";
 import PracticePortal from "./PracticePortal.jsx";
 
-const BG      = "#0D0F14";
-const CARD    = "#141820";
-const SURFACE = "#1A1F28";
-const LINE    = "rgba(255,255,255,0.08)";
+const BG      = "#090A0E";
+const CARD    = "#10141C";
+const SURFACE = "#151A22";
+const LINE    = "rgba(255,255,255,0.06)";
 const TEXT    = "#E8EBF0";
 const MUTE    = "#8E97A8";
 const FAINT   = "#5E6678";
-const INK     = "#0D0F14";
+const INK     = "#090A0E";
 const AMBER   = "#FFB84D";
 const GOOD    = "#7BD88F";
 
@@ -166,7 +166,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-root" style={{ background: `linear-gradient(165deg, #0F1116 0%, ${BG} 50%, #0A0C10 100%)`, color: TEXT, fontFamily: "'Inter',system-ui,sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div className="app-root" style={{ background: `linear-gradient(165deg, #0B0C10 0%, ${BG} 48%, #060708 100%)`, color: TEXT, fontFamily: "'Inter',system-ui,sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
         *{box-sizing:border-box;margin:0}
@@ -182,24 +182,25 @@ export default function App() {
         .viewfade{animation:vf .5s cubic-bezier(.22,1,.36,1)}
         @keyframes vf{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
         .glow{position:fixed;top:-25%;right:-12%;width:62vw;height:62vw;max-width:760px;max-height:760px;border-radius:50%;
-          background:radial-gradient(circle,rgba(255,184,77,0.11),transparent 64%);filter:blur(32px);pointer-events:none;animation:drift 22s ease-in-out infinite;z-index:0}
+          background:radial-gradient(circle,rgba(255,184,77,0.07),transparent 64%);filter:blur(36px);pointer-events:none;animation:drift 22s ease-in-out infinite;z-index:0}
         @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-6%,5%)}}
         .lnk{color:${MUTE};text-decoration:none;font-size:14.5px;transition:color .2s;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
         .lnk:hover{color:${TEXT}}.lnk.on{color:${TEXT}}
         .btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;border-radius:999px;padding:14px 26px;cursor:pointer;border:1px solid transparent;transition:transform .18s ease,background .2s,border-color .2s;display:inline-flex;align-items:center;gap:9px;text-decoration:none}
         .btn:hover{transform:translateY(-2px)}
         .btn-p{background:${AMBER};color:${INK}}.btn-p:hover{background:#FFC66E}
-        .btn-g{background:transparent;color:${TEXT};border-color:${LINE}}.btn-g:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.04)}
-        .btn-sandbox{font-size:14px;padding:11px 20px;background:rgba(59,91,180,0.14);color:#c5d4f8;border-color:rgba(100,130,210,0.35)}
-        .btn-sandbox:hover{border-color:rgba(120,150,230,0.5);background:rgba(59,91,180,0.22)}
-        .sandbox-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:rgba(59,91,180,0.22);color:#b4c4ea;border:1px solid rgba(100,130,210,0.3);margin-right:8px;vertical-align:middle}
+        .btn-g{background:transparent;color:${TEXT};border-color:${LINE}}
+        .btn-g:hover{border-color:rgba(255,255,255,0.14);background:rgba(255,255,255,0.03)}
+        .btn-sandbox{font-size:14px;padding:11px 20px;background:rgba(59,91,180,0.1);color:#b8c8ef;border-color:rgba(100,130,210,0.28)}
+        .btn-sandbox:hover{border-color:rgba(120,150,230,0.42);background:rgba(59,91,180,0.16)}
+        .sandbox-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:rgba(59,91,180,0.16);color:#a8b8de;border:1px solid rgba(100,130,210,0.24);margin-right:8px;vertical-align:middle}
         .portal-link{color:${FAINT};font-size:13px;text-decoration:none;white-space:nowrap;padding:8px 4px}
         .portal-link:hover{color:${MUTE}}
         .nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
         .nav-sep{width:1px;height:22px;background:${LINE};flex:none}
         .nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px;border:1px solid ${LINE};background:transparent;color:${TEXT};cursor:pointer;flex:none}
         .nav-toggle svg{width:20px;height:20px}
-        .nav-drawer{display:none;border-top:1px solid ${LINE};background:rgba(12,14,19,0.98);backdrop-filter:blur(14px);padding:12px 0 18px}
+        .nav-drawer{display:none;border-top:1px solid ${LINE};background:rgba(9,10,14,0.99);backdrop-filter:blur(14px);padding:12px 0 18px}
         .nav-drawer.open{display:block}
         .nav-drawer-grid{display:grid;gap:6px}
         .nav-drawer a,.nav-drawer button.nav-item{width:100%;text-align:left;padding:14px 16px;border-radius:12px;border:1px solid transparent;background:transparent;color:${MUTE};font-size:15px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between}
@@ -216,10 +217,10 @@ export default function App() {
         .footer-links{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
         .footer-note{color:${FAINT};font-size:12.5px;max-width:440px;line-height:1.5;text-align:right}
         .tab{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;cursor:pointer;background:transparent;color:${MUTE};border:1px solid ${LINE};transition:all .2s;white-space:nowrap}
-        .tab:hover{color:${TEXT};border-color:rgba(255,255,255,0.18)}
+        .tab:hover{color:${TEXT};border-color:rgba(255,255,255,0.14)}
         .tab.on{background:${AMBER};color:${INK};border-color:${AMBER}}
-        .card{background:${CARD};border:1px solid ${LINE};border-radius:20px;transition:border-color .25s,transform .25s,box-shadow .25s;box-shadow:0 6px 20px rgba(0,0,0,0.28)}
-        .hovr:hover{border-color:rgba(255,184,77,0.3);transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,0.32)}
+        .card{background:${CARD};border:1px solid ${LINE};border-radius:20px;transition:border-color .25s,transform .25s,box-shadow .25s;box-shadow:0 8px 28px rgba(0,0,0,0.38)}
+        .hovr:hover{border-color:rgba(255,184,77,0.26);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.42)}
         .dot{width:5px;height:5px;border-radius:50%;flex:none;margin-top:8px}
         .yearpick{display:inline-flex;align-items:center;gap:10px;background:${CARD};border:1px solid ${LINE};border-radius:999px;padding:7px 8px 7px 16px}
         .yearpick select,.fld{appearance:none;-webkit-appearance:none;background:transparent;border:none;color:${TEXT};font-family:'JetBrains Mono',monospace;cursor:pointer}
@@ -281,7 +282,7 @@ export default function App() {
 
       <div className="glow" />
 
-      <nav style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(12,14,19,0.9)", backdropFilter: "blur(14px)", borderBottom: `1px solid ${LINE}` }}>
+      <nav style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(9,10,14,0.94)", backdropFilter: "blur(16px)", borderBottom: `1px solid ${LINE}` }}>
         <div className="nav-bar" style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", height: 66 }}>
           <button className="lnk disp" onClick={() => go("home")} style={{ fontWeight: 700, fontSize: 19, color: TEXT, display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}>
             <span style={{ width: 26, height: 26, borderRadius: 8, background: AMBER, color: INK, display: "grid", placeItems: "center", fontSize: 14, transform: "rotate(-8deg)" }}>✈</span>
@@ -516,7 +517,7 @@ function MappingPage({ go }) {
           ))}
         </div>
 
-        <div className="rise" style={{ marginTop: 24, padding: "16px 18px", borderRadius: 14, background: "rgba(255,184,77,0.06)", border: `1px solid rgba(255,184,77,0.22)` }}>
+        <div className="rise" style={{ marginTop: 24, padding: "16px 18px", borderRadius: 14, background: "rgba(255,184,77,0.04)", border: `1px solid rgba(255,184,77,0.16)` }}>
           <p style={{ fontSize: 13.5, lineHeight: 1.55, color: MUTE }}>
             <strong style={{ color: TEXT }}>One rule above all:</strong> your claimed TDS must match Form 26AS to the rupee. If a figure here is not on your documents, do not invent it, and if it is on your documents but not in the pre-filled data, add it.
           </p>
@@ -577,7 +578,7 @@ function CalculatorPage({ ay }) {
               <Verdict label="Old regime" total={O.total} win={better === "old"} />
             </div>
 
-            <div style={{ marginTop: 16, padding: "16px 18px", borderRadius: 14, background: "rgba(123,216,143,0.07)", border: `1px solid rgba(123,216,143,0.25)` }}>
+            <div style={{ marginTop: 16, padding: "16px 18px", borderRadius: 14, background: "rgba(123,216,143,0.05)", border: `1px solid rgba(123,216,143,0.18)` }}>
               {save === 0
                 ? <p style={{ fontSize: 15, lineHeight: 1.5 }}>Dead heat. Pick the <strong style={{ color: GOOD }}>new regime</strong>, less paperwork, same tax.</p>
                 : <p style={{ fontSize: 15, lineHeight: 1.5 }}>The <strong style={{ color: GOOD }}>{better} regime</strong> keeps <strong className="disp" style={{ color: GOOD }}>{inr(save)}</strong> more in your pocket this year.</p>}
@@ -627,7 +628,7 @@ function CalculatorPage({ ay }) {
 
 function Verdict({ label, total, win }) {
   return (
-    <div style={{ border: `1px solid ${win ? GOOD : LINE}`, background: win ? "rgba(123,216,143,0.07)" : "transparent", borderRadius: 14, padding: "16px 16px" }}>
+    <div style={{ border: `1px solid ${win ? GOOD : LINE}`, background: win ? "rgba(123,216,143,0.05)" : "transparent", borderRadius: 14, padding: "16px 16px" }}>
       <div className="disp" style={{ fontSize: 13.5, fontWeight: 600 }}>{label} {win && <span className="mono" style={{ color: GOOD, fontSize: 11, marginLeft: 4 }}>BEST</span>}</div>
       <div className="disp" style={{ fontSize: 23, fontWeight: 600, marginTop: 6, color: win ? GOOD : TEXT }}>{total ? inr(total) : "Rs 0"}</div>
     </div>
