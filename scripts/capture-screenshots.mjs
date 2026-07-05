@@ -20,6 +20,23 @@ await mkdir(outDir, { recursive: true });
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 
+// Match prefers-reduced-motion so .rise elements render visible without scroll.
+await page.emulateMedia({ reducedMotion: "reduce" });
+
+async function revealAll() {
+  const height = await page.evaluate(() => document.body.scrollHeight);
+  for (let y = 0; y <= height; y += 400) {
+    await page.evaluate((scrollY) => window.scrollTo(0, scrollY), y);
+    await page.waitForTimeout(60);
+  }
+  await page.evaluate(() => {
+    document.querySelectorAll(".rise").forEach((el) => el.classList.add("in"));
+  });
+  await page.waitForTimeout(400);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(200);
+}
+
 await page.goto(baseUrl, { waitUntil: "networkidle" });
 await page.waitForTimeout(1200);
 
@@ -32,7 +49,7 @@ for (const { file, nav } of views) {
     await page.waitForTimeout(600);
   }
 
-  await page.evaluate(() => window.scrollTo(0, 0));
+  await revealAll();
   await page.screenshot({
     path: path.join(outDir, `${file}.png`),
     fullPage: true,
