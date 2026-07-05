@@ -12,9 +12,9 @@ TaxPilot is a single-page React app that helps first-time Indian income-tax file
 
 ### Home
 
-Landing page with assessment-year picker, quick links into the three main tools, and a straight answer on when DIY filing makes sense.
+Landing page with assessment-year picker, skim-friendly feature grid, and a link to the official e-Filing portal.
 
-![TaxPilot home — hero, year picker, and three feature cards](docs/screenshots/home.png)
+![TaxPilot home — hero, year picker, and feature grid](docs/screenshots/home.png)
 
 ### Find my form
 
@@ -36,9 +36,15 @@ Old vs new regime comparison with slab-by-slab breakdown, standard deduction, re
 
 ### Solutions
 
-Searchable library of 16 common filing problems — refunds stuck, TDS mismatches, defective notices, verification failures — each with a plain-language fix.
+Searchable library of common filing problems — refunds stuck, TDS mismatches, defective notices, verification failures — each with a plain-language fix.
 
 ![Solutions library — search, category filters, and expandable Q&A](docs/screenshots/solutions.png)
+
+### Practice portal
+
+Sandbox that mirrors the e-Filing flow — fake login, ITR wizard, editable schedules, and live return totals. Nothing is submitted.
+
+![Practice e-Filing portal — sandbox login and ITR filing wizard](docs/screenshots/practice.png)
 
 ---
 
@@ -51,6 +57,7 @@ Searchable library of 16 common filing problems — refunds stuck, TDS mismatche
 | **What goes where** | Maps source documents (Form 16, 26AS, AIS, broker statements) to the exact ITR schedule fields |
 | **Calculator** | Computes tax under old and new regime with slab detail, 87A rebate, and marginal relief |
 | **Solutions** | Searchable, filterable Q&A for refunds, payments, mismatches, notices, forms, verification, regimes, deadlines |
+| **Practice portal** | Full mock e-Filing sandbox with coach marks, editable schedules, and live totals — no real submission |
 
 ---
 
@@ -104,7 +111,8 @@ TaxPilot/
 │   └── capture-screenshots.mjs
 ├── src/
 │   ├── main.jsx             # Entry point — mounts <App /> into #root
-│   └── TaxPilot.jsx         # Entire app: data, tax engine, all views
+│   ├── TaxPilot.jsx         # Main app: data, tax engine, all views
+│   └── PracticePortal.jsx   # Mock e-Filing sandbox
 ├── index.html               # HTML shell + favicon link
 ├── vite.config.js
 └── package.json
@@ -114,19 +122,19 @@ TaxPilot/
 
 1. `index.html` loads `src/main.jsx`
 2. `main.jsx` calls `createRoot(...).render(<App />)`
-3. `TaxPilot.jsx` exports `App`, which holds view state (`home`, `finder`, `mapping`, `calc`, `solutions`) and renders the active section
+3. `TaxPilot.jsx` exports `App`, which holds view state (`home`, `finder`, `mapping`, `calc`, `solutions`, `practice`) and renders the active section
 
 ---
 
 ## Regenerating screenshots
 
-Screenshots are captured with Playwright. Chromium is installed automatically on first `npm install` (via the `playwright` dev dependency).
+Screenshots are captured with Playwright at **1280×900 viewport** (above-the-fold only — not full-page scrolls). Chromium installs on first `npm install` via the `playwright` dev dependency.
 
 ```bash
 # Terminal 1 — keep the dev server running
 npm run dev
 
-# Terminal 2 — capture all five views
+# Terminal 2 — capture all six views
 npm run screenshots
 ```
 
